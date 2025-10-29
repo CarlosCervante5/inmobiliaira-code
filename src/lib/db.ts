@@ -4,6 +4,15 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+// Solo crear PrismaClient si DATABASE_URL está configurado
+export const prisma = globalForPrisma.prisma ?? (
+  process.env.DATABASE_URL 
+    ? new PrismaClient({
+        log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+      })
+    : null as any
+)
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+if (process.env.NODE_ENV !== 'production' && process.env.DATABASE_URL) {
+  globalForPrisma.prisma = prisma
+}
