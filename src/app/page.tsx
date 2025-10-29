@@ -75,14 +75,14 @@ export default function HomePage() {
                 <input
                   type="text"
                   placeholder="Ciudad, colonia..."
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Tipo de Propiedad
                 </label>
-                <select className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <select className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
                   <option>Todos los tipos</option>
                   <option>Casa</option>
                   <option>Departamento</option>
@@ -94,7 +94,7 @@ export default function HomePage() {
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Rango de Precio
                 </label>
-                <select className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <select className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
                   <option>Cualquier precio</option>
                   <option>Hasta $500,000</option>
                   <option>$500,000 - $1,000,000</option>
