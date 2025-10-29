@@ -37,25 +37,25 @@ export default function HomePage() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-600 to-blue-800 text-white">
-        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:py-16 lg:py-24 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
               Encuentra tu hogar ideal
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
+            <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg leading-7 sm:leading-8 text-blue-100 px-2">
               La plataforma inmobiliaria más completa de México. Busca propiedades, 
               consulta tu crédito INFONAVIT y conecta con brókers profesionales.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Link href="/properties">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-                  <Search className="mr-2 h-5 w-5" />
-                  Buscar Propiedades
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-x-6 px-4">
+              <Link href="/properties" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-gray-100">
+                  <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="text-sm sm:text-base">Buscar Propiedades</span>
                 </Button>
               </Link>
-              <Link href="/auth/signup">
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600">
-                  Registrarse Gratis
+              <Link href="/auth/signup" className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-blue-600">
+                  <span className="text-sm sm:text-base">Registrarse Gratis</span>
                 </Button>
               </Link>
             </div>
@@ -64,12 +64,12 @@ export default function HomePage() {
       </section>
 
       {/* Search Bar */}
-      <section className="relative -mt-16 z-10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-lg bg-white p-6 shadow-lg">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="relative -mt-12 sm:-mt-16 z-10">
+        <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8">
+          <div className="rounded-lg bg-white p-4 sm:p-6 shadow-lg">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Ubicación
                 </label>
                 <input
@@ -79,7 +79,7 @@ export default function HomePage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Tipo de Propiedad
                 </label>
                 <select className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
@@ -91,7 +91,7 @@ export default function HomePage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Rango de Precio
                 </label>
                 <select className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
@@ -103,7 +103,7 @@ export default function HomePage() {
                 </select>
               </div>
               <div className="flex items-end">
-                <Button className="w-full">
+                <Button className="w-full text-sm sm:text-base">
                   <Search className="mr-2 h-4 w-4" />
                   Buscar
                 </Button>
@@ -114,15 +114,15 @@ export default function HomePage() {
       </section>
 
       {/* Property Types */}
-      <section className="py-16">
+      <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Explora por tipo de propiedad</h2>
-            <p className="mt-4 text-lg text-gray-600">
+          <div className="text-center px-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Explora por tipo de propiedad</h2>
+            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
               Encuentra el tipo de propiedad que mejor se adapte a tus necesidades
             </p>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {propertyTypes.map((type) => (
               <Link
                 key={type.name}
@@ -147,15 +147,15 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gray-50 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">¿Por qué elegirnos?</h2>
-            <p className="mt-4 text-lg text-gray-600">
+          <div className="text-center px-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">¿Por qué elegirnos?</h2>
+            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
               Ofrecemos las mejores herramientas para tu búsqueda inmobiliaria
             </p>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 sm:mt-12 grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((feature) => (
               <div key={feature.title} className="text-center">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-blue-600 text-white">
@@ -174,24 +174,24 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-blue-600 py-16">
+      <section className="bg-blue-600 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-white">
+          <div className="text-center px-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">
               ¿Listo para encontrar tu hogar ideal?
             </h2>
-            <p className="mt-4 text-lg text-blue-100">
+            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-blue-100">
               Únete a miles de personas que ya encontraron su hogar con nosotros
             </p>
-            <div className="mt-8 flex items-center justify-center gap-x-6">
-              <Link href="/auth/signup">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-                  Comenzar Ahora
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-x-6 px-4">
+              <Link href="/auth/signup" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-gray-100">
+                  <span className="text-sm sm:text-base">Comenzar Ahora</span>
                 </Button>
               </Link>
-              <Link href="/properties">
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600">
-                  Ver Propiedades
+              <Link href="/properties" className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-blue-600">
+                  <span className="text-sm sm:text-base">Ver Propiedades</span>
                 </Button>
               </Link>
             </div>
@@ -200,9 +200,9 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 py-12">
+      <footer className="bg-gray-900 py-8 sm:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <h3 className="text-lg font-semibold text-white">Catálogo Inmobiliario</h3>
               <p className="mt-2 text-sm text-gray-400">

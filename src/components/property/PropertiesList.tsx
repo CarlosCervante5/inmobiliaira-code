@@ -238,18 +238,18 @@ export function PropertiesList() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Propiedades Disponibles</h1>
-          <p className="mt-2 text-gray-600">
+        <div className="mb-6 sm:mb-8 px-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Propiedades Disponibles</h1>
+          <p className="mt-2 text-sm sm:text-base text-gray-600">
             Encuentra tu hogar ideal entre {filteredProperties.length} propiedades
           </p>
         </div>
 
         {/* Búsqueda y Filtros */}
-        <div className="mb-8">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between">
             {/* Barra de búsqueda */}
             <div className="flex-1">
               <div className="relative">
@@ -268,7 +268,7 @@ export function PropertiesList() {
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2"
+              className="flex items-center justify-center space-x-2 text-sm sm:text-base"
             >
               <Filter className="h-4 w-4" />
               <span>Filtros</span>
@@ -277,8 +277,8 @@ export function PropertiesList() {
 
           {/* Panel de filtros */}
           {showFilters && (
-            <div className="mt-4 rounded-lg bg-white p-6 shadow-sm">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-4 rounded-lg bg-white p-4 sm:p-6 shadow-sm">
+              <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Tipo de Propiedad
@@ -385,14 +385,14 @@ export function PropertiesList() {
         </div>
 
         {/* Resultados */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-600">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+            <p className="text-xs sm:text-sm text-gray-600">
               Mostrando {filteredProperties.length} de {properties.length} propiedades
             </p>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">Ordenar por:</span>
-              <select className="rounded-md border border-gray-300 px-3 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            <div className="flex items-center space-x-2 w-full sm:w-auto">
+              <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">Ordenar por:</span>
+              <select className="flex-1 sm:flex-none rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-1 text-xs sm:text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
                 <option value="newest">Más recientes</option>
                 <option value="price-low">Precio: Menor a Mayor</option>
                 <option value="price-high">Precio: Mayor a Menor</option>
@@ -404,7 +404,7 @@ export function PropertiesList() {
 
         {/* Grid de propiedades */}
         {filteredProperties.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredProperties.map((property) => (
               <PropertyCard
                 key={property.id}

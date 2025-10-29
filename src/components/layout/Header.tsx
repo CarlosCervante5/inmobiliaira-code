@@ -30,14 +30,15 @@ export function Header() {
 
   return (
     <header className="bg-white shadow-sm">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+      <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8">
+        <div className="flex h-14 sm:h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <Building2 className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">
-                Catálogo Inmobiliario
+          <div className="flex items-center flex-shrink-0">
+            <Link href="/" className="flex items-center space-x-1.5 sm:space-x-2">
+              <Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+              <span className="text-base sm:text-xl font-bold text-gray-900">
+                <span className="hidden sm:inline">Catálogo Inmobiliario</span>
+                <span className="sm:hidden">Catálogo</span>
               </span>
             </Link>
           </div>
@@ -71,14 +72,14 @@ export function Header() {
           </div>
 
           {/* Usuario */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {status === 'loading' ? (
               <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
             ) : session ? (
-              <div className="relative group">
+              <div className="hidden sm:block relative group">
                 <button className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
                   <User className="h-4 w-4" />
-                  <span>{session.user?.name}</span>
+                  <span className="hidden lg:inline">{session.user?.name}</span>
                 </button>
                 
                 {/* Dropdown */}
@@ -102,14 +103,14 @@ export function Header() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="hidden sm:flex items-center space-x-2">
                 <Link href="/auth/signin">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
                     Iniciar Sesión
                   </Button>
                 </Link>
                 <Link href="/auth/signup">
-                  <Button size="sm">
+                  <Button size="sm" className="text-xs sm:text-sm">
                     Registrarse
                   </Button>
                 </Link>
@@ -119,7 +120,8 @@ export function Header() {
             {/* Menú móvil */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden"
+              className="sm:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              aria-label="Toggle menu"
             >
               {isMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -132,13 +134,14 @@ export function Header() {
 
         {/* Menú móvil */}
         {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
+          <div className="md:hidden border-t border-gray-200">
+            <div className="space-y-1 px-3 pb-4 pt-3">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="flex items-center space-x-2 rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center space-x-2 rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
                 >
                   <item.icon className="h-4 w-4" />
                   <span>{item.name}</span>
@@ -158,30 +161,45 @@ export function Header() {
               </div>
 
               {session ? (
-                <div className="border-t border-gray-200 pt-4">
+                <div className="border-t border-gray-200 pt-3 mt-2">
+                  <div className="px-3 py-2 mb-2">
+                    <p className="text-xs font-semibold text-gray-500 uppercase">Mi Cuenta</p>
+                  </div>
                   {userNavigation.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}
-                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
                     >
                       {item.name}
                     </Link>
                   ))}
                   <button
-                    onClick={() => signOut()}
-                    className="flex w-full items-center space-x-2 rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      signOut()
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex w-full items-center space-x-2 rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Cerrar Sesión</span>
                   </button>
                 </div>
               ) : (
-                <div className="border-t border-gray-200 pt-4">
-                  <Link href="/auth/signin" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
+                <div className="border-t border-gray-200 pt-3 mt-2">
+                  <Link 
+                    href="/auth/signin" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
+                  >
                     Iniciar Sesión
                   </Link>
-                  <Link href="/auth/signup" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100">
+                  <Link 
+                    href="/auth/signup" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
+                  >
                     Registrarse
                   </Link>
                 </div>
