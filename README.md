@@ -1,36 +1,222 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Catálogo Inmobiliario
 
-## Getting Started
+Plataforma inmobiliaria completa desarrollada con Next.js, TypeScript y Prisma. Permite a los usuarios buscar propiedades, consultar créditos INFONAVIT y conectar con brókers profesionales.
 
-First, run the development server:
+## 🚀 Características
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Fase 1 - MVP (Actual)
+- ✅ Sistema de autenticación (Clientes y Brókers)
+- ✅ Gestión básica de propiedades
+- ✅ Búsqueda y filtros de propiedades
+- ✅ Interfaz responsive y moderna
+- ✅ Base de datos con Prisma y PostgreSQL
+
+### Fase 2 - Próximamente
+- 🔄 Integración con API de INFONAVIT
+- 🔄 Dashboards avanzados
+- 🔄 Sistema de notificaciones
+- 🔄 Búsqueda en mapa interactivo
+
+### Fase 3 - Futuro
+- 📱 Aplicación móvil con React Native
+- 🎥 Tours virtuales 360°
+- 🧮 Calculadora de hipotecas avanzada
+- 📅 Programación de citas en línea
+
+## 🛠️ Tecnologías
+
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Base de Datos**: PostgreSQL
+- **Autenticación**: NextAuth.js
+- **Validación**: Zod
+- **UI Components**: Headless UI, Lucide React
+
+## 📋 Prerrequisitos
+
+- Node.js 18+ 
+- PostgreSQL 13+
+- npm o yarn
+
+## 🚀 Instalación
+
+1. **Clonar el repositorio**
+   ```bash
+   git clone <repository-url>
+   cd catalogo-inmobiliario
+   ```
+
+2. **Instalar dependencias**
+   ```bash
+   npm install
+   ```
+
+3. **Configurar variables de entorno**
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   
+   Editar `.env.local` con tus configuraciones:
+   ```env
+   # Database
+   DATABASE_URL="postgresql://username:password@localhost:5432/catalogo_inmobiliario?schema=public"
+   
+   # NextAuth
+   NEXTAUTH_URL="http://localhost:3000"
+   NEXTAUTH_SECRET="your-secret-key-here"
+   
+   # OAuth Providers (opcional)
+   GOOGLE_CLIENT_ID=""
+   GOOGLE_CLIENT_SECRET=""
+   ```
+
+4. **Configurar la base de datos**
+   ```bash
+   # Generar el cliente de Prisma
+   npx prisma generate
+   
+   # Ejecutar migraciones
+   npx prisma db push
+   ```
+
+5. **Iniciar el servidor de desarrollo**
+   ```bash
+   npm run dev
+   ```
+
+6. **Abrir en el navegador**
+   ```
+   http://localhost:3000
+   ```
+
+## 📁 Estructura del Proyecto
+
+```
+src/
+├── app/                    # App Router de Next.js
+│   ├── api/               # API Routes
+│   ├── auth/              # Páginas de autenticación
+│   ├── properties/        # Páginas de propiedades
+│   └── dashboard/         # Panel de control
+├── components/            # Componentes reutilizables
+│   ├── ui/               # Componentes base
+│   ├── layout/           # Componentes de layout
+│   ├── property/         # Componentes de propiedades
+│   └── forms/            # Formularios
+├── lib/                  # Utilidades y configuraciones
+│   ├── auth.ts           # Configuración de NextAuth
+│   ├── db.ts             # Cliente de Prisma
+│   ├── validations.ts    # Esquemas de validación
+│   └── utils.ts          # Utilidades generales
+├── types/                # Tipos TypeScript
+└── hooks/                # Custom hooks
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🗄️ Base de Datos
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+El proyecto utiliza Prisma como ORM con PostgreSQL. El esquema incluye:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Users**: Clientes y Brókers
+- **Properties**: Propiedades inmobiliarias
+- **Favorites**: Propiedades favoritas
+- **CreditInquiries**: Consultas de crédito
+- **PropertyInquiries**: Consultas sobre propiedades
+- **Messages**: Sistema de mensajería
 
-## Learn More
+### Comandos de Prisma
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Ver la base de datos en el navegador
+npx prisma studio
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Resetear la base de datos
+npx prisma db reset
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Generar migraciones
+npx prisma migrate dev
+```
 
-## Deploy on Vercel
+## 🔐 Autenticación
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+El sistema soporta múltiples métodos de autenticación:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Credenciales**: Email y contraseña
+- **Google OAuth**: Para registro rápido
+- **Roles**: Cliente, Bróker, Admin
+
+### Roles de Usuario
+
+- **Cliente**: Puede buscar propiedades, agregar favoritos, consultar créditos
+- **Bróker**: Puede gestionar propiedades, ver estadísticas, contactar clientes
+- **Admin**: Acceso completo al sistema
+
+## 🎨 Personalización
+
+### Colores
+El proyecto usa una paleta de colores azul como principal. Puedes personalizar los colores en `tailwind.config.js`.
+
+### Componentes
+Los componentes están en `src/components/ui/` y siguen el patrón de diseño de Headless UI.
+
+## 📱 Responsive Design
+
+La aplicación está optimizada para:
+- 📱 Móviles (320px+)
+- 📱 Tablets (768px+)
+- 💻 Desktop (1024px+)
+
+## 🚀 Despliegue
+
+### Vercel (Recomendado)
+
+1. Conectar el repositorio con Vercel
+2. Configurar variables de entorno
+3. Desplegar automáticamente
+
+### Otras plataformas
+
+El proyecto es compatible con cualquier plataforma que soporte Next.js:
+- Netlify
+- AWS Amplify
+- Railway
+- DigitalOcean
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
+
+## 📞 Soporte
+
+Para soporte técnico o preguntas:
+- 📧 Email: soporte@catalogo-inmobiliario.com
+- 💬 Discord: [Servidor de la comunidad]
+- 📖 Documentación: [Enlace a la documentación]
+
+## 🗺️ Roadmap
+
+### Q1 2024
+- [ ] Integración con INFONAVIT
+- [ ] Dashboard avanzado
+- [ ] Sistema de notificaciones
+
+### Q2 2024
+- [ ] Aplicación móvil
+- [ ] Tours virtuales
+- [ ] Calculadora de hipotecas
+
+### Q3 2024
+- [ ] CRM integrado
+- [ ] Analytics avanzado
+- [ ] API pública
+
+---
+
+Desarrollado con ❤️ para la comunidad inmobiliaria mexicana.
