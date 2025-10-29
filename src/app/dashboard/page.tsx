@@ -170,8 +170,6 @@ export default function DashboardPage() {
               <div className={`text-sm ${
                 stat.changeType === 'positive' 
                   ? 'text-green-600' 
-                  : stat.changeType === 'negative'
-                  ? 'text-red-600'
                   : 'text-gray-500'
               }`}>
                 {stat.change}
