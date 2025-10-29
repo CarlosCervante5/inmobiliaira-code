@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { PropertyCard } from '@/components/property/PropertyCard'
+import { PropertyCardHomie } from '@/components/property/PropertyCardHomie'
+import { PropertyMap } from '@/components/map/PropertyMap'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { Search, Filter, MapPin, Bed, Bath, Car, Ruler } from 'lucide-react'
+import { Search, Filter, Map, List } from 'lucide-react'
 import { Property, PropertyType, PropertyWithOwner } from '@/types'
 
 // Datos de ejemplo para el MVP
@@ -236,49 +237,61 @@ export function PropertiesList() {
     setSearchQuery('')
   }
 
+  const [selectedProperty, setSelectedProperty] = useState<PropertyWithOwner | null>(null)
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8 py-6 sm:py-8">
-        {/* Header */}
-        <div className="mb-6 sm:mb-8 px-1">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Propiedades Disponibles</h1>
-          <p className="mt-2 text-sm sm:text-base text-gray-600">
-            Encuentra tu hogar ideal entre {filteredProperties.length} propiedades
-          </p>
-        </div>
+      {/* Header fijo */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div className="mx-auto max-w-full px-4 py-4">
+          {/* Breadcrumb */}
+          <div className="mb-3">
+            <span className="text-sm text-gray-600">
+              {'> '}
+              <span className="text-gray-900 font-medium">Propiedades en Ciudad de México, CDMX</span>
+            </span>
+          </div>
 
-        {/* Búsqueda y Filtros */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between">
+          {/* Búsqueda y filtros */}
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             {/* Barra de búsqueda */}
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Buscar por ubicación, características..."
+                  placeholder="Ingresa tu colonia, ciudad o región"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
-            {/* Botón de filtros */}
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center justify-center space-x-2 text-sm sm:text-base"
-            >
-              <Filter className="h-4 w-4" />
-              <span>Filtros</span>
-            </Button>
+            {/* Botones de acción */}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center space-x-2"
+              >
+                <Filter className="h-4 w-4" />
+                <span>Filtrar {Object.values(filters).filter(f => f).length > 0 ? `(${Object.values(filters).filter(f => f).length})` : ''}</span>
+              </Button>
+              <select className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option>Ordenar</option>
+                <option>Precio: Menor a Mayor</option>
+                <option>Precio: Mayor a Menor</option>
+                <option>Más recientes</option>
+                <option>Área</option>
+              </select>
+            </div>
           </div>
 
           {/* Panel de filtros */}
           {showFilters && (
-            <div className="mt-4 rounded-lg bg-white p-4 sm:p-6 shadow-sm">
-              <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-4 rounded-lg bg-gray-50 p-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Tipo de Propiedad
@@ -286,16 +299,13 @@ export function PropertiesList() {
                   <select
                     value={filters.type}
                     onChange={(e) => handleFilterChange('type', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option value="">Todos los tipos</option>
                     <option value="HOUSE">Casa</option>
                     <option value="APARTMENT">Departamento</option>
-                    <option value="TOWNHOUSE">Casa Adosada</option>
                     <option value="LAND">Terreno</option>
                     <option value="COMMERCIAL">Comercial</option>
-                    <option value="OFFICE">Oficina</option>
-                    <option value="WAREHOUSE">Bodega</option>
                   </select>
                 </div>
 
@@ -332,7 +342,7 @@ export function PropertiesList() {
                   <select
                     value={filters.bedrooms}
                     onChange={(e) => handleFilterChange('bedrooms', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option value="">Cualquier cantidad</option>
                     <option value="1">1+</option>
@@ -349,7 +359,7 @@ export function PropertiesList() {
                   <select
                     value={filters.bathrooms}
                     onChange={(e) => handleFilterChange('bathrooms', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option value="">Cualquier cantidad</option>
                     <option value="1">1+</option>
@@ -372,9 +382,9 @@ export function PropertiesList() {
                 </div>
               </div>
 
-              <div className="mt-4 flex justify-end space-x-2">
-                <Button variant="outline" onClick={clearFilters}>
-                  Limpiar Filtros
+              <div className="mt-4 flex justify-end">
+                <Button variant="outline" onClick={clearFilters} className="mr-2">
+                  Limpiar
                 </Button>
                 <Button onClick={() => setShowFilters(false)}>
                   Aplicar Filtros
@@ -383,55 +393,67 @@ export function PropertiesList() {
             </div>
           )}
         </div>
+      </div>
 
-        {/* Resultados */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
-            <p className="text-xs sm:text-sm text-gray-600">
-              Mostrando {filteredProperties.length} de {properties.length} propiedades
-            </p>
-            <div className="flex items-center space-x-2 w-full sm:w-auto">
-              <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">Ordenar por:</span>
-              <select className="flex-1 sm:flex-none rounded-md border border-gray-300 px-2 sm:px-3 py-1.5 sm:py-1 text-xs sm:text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                <option value="newest">Más recientes</option>
-                <option value="price-low">Precio: Menor a Mayor</option>
-                <option value="price-high">Precio: Mayor a Menor</option>
-                <option value="area">Área</option>
-              </select>
+      {/* Contenido principal - Layout dividido */}
+      <div className="flex h-[calc(100vh-200px)]">
+        {/* Panel izquierdo - Lista de propiedades */}
+        <div className="w-full lg:w-1/2 overflow-y-auto bg-white border-r border-gray-200">
+          <div className="p-4">
+            {/* Resultados */}
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <span className="text-green-600">
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                  </svg>
+                </span>
+                <span className="text-base font-medium text-gray-900">
+                  Encontramos {filteredProperties.length} propiedades
+                </span>
+              </div>
+              <span className="text-sm text-gray-600">
+                1 - {Math.min(10, filteredProperties.length)} de {filteredProperties.length} resultados
+              </span>
             </div>
+
+            {/* Lista de propiedades */}
+            {filteredProperties.length > 0 ? (
+              <div className="space-y-4">
+                {filteredProperties.map((property) => (
+                  <PropertyCardHomie
+                    key={property.id}
+                    property={property}
+                    isFavorite={favorites.includes(property.id)}
+                    onToggleFavorite={handleToggleFavorite}
+                    onSelect={setSelectedProperty}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="mx-auto h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center">
+                  <Search className="h-8 w-8 text-gray-400" />
+                </div>
+                <h3 className="mt-4 text-lg font-medium text-gray-900">
+                  No se encontraron propiedades
+                </h3>
+                <p className="mt-2 text-gray-600">
+                  Intenta ajustar tus filtros de búsqueda
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Grid de propiedades */}
-        {filteredProperties.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredProperties.map((property) => (
-              <PropertyCard
-                key={property.id}
-                property={property}
-                isFavorite={favorites.includes(property.id)}
-                onToggleFavorite={handleToggleFavorite}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="mx-auto h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center">
-              <Search className="h-8 w-8 text-gray-400" />
-            </div>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">
-              No se encontraron propiedades
-            </h3>
-            <p className="mt-2 text-gray-600">
-              Intenta ajustar tus filtros de búsqueda
-            </p>
-            <div className="mt-6">
-              <Button onClick={clearFilters}>
-                Limpiar Filtros
-              </Button>
-            </div>
-          </div>
-        )}
+        {/* Panel derecho - Mapa */}
+        <div className="hidden lg:block w-1/2 relative bg-gray-200">
+          <PropertyMap
+            properties={filteredProperties}
+            selectedProperty={selectedProperty}
+            onPropertySelect={setSelectedProperty}
+          />
+        </div>
       </div>
     </div>
   )
