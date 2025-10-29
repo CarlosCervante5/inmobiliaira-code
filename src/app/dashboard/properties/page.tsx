@@ -34,7 +34,7 @@ const mockProperties = [
     views: 45,
     inquiries: 8,
     publishedAt: '2024-01-15',
-    image: '/placeholder-property.jpg'
+    image: '/images/properties/casa-polanco.jpg'
   },
   {
     id: '2',
@@ -50,7 +50,7 @@ const mockProperties = [
     views: 32,
     inquiries: 5,
     publishedAt: '2024-01-10',
-    image: '/placeholder-property.jpg'
+    image: '/images/properties/depto-roma.jpg'
   },
   {
     id: '3',
@@ -66,7 +66,7 @@ const mockProperties = [
     views: 67,
     inquiries: 12,
     publishedAt: '2024-01-05',
-    image: '/placeholder-property.jpg'
+    image: '/images/properties/casa-condesa.jpg'
   }
 ]
 

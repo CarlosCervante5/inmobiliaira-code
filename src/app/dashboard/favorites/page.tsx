@@ -30,7 +30,7 @@ const mockFavorites = [
     city: 'Ciudad de México',
     state: 'CDMX',
     addedAt: '2024-01-15',
-    image: '/placeholder-property.jpg',
+    image: '/images/properties/casa-polanco.jpg',
     broker: {
       name: 'Juan Pérez',
       company: 'Inmobiliaria ABC',
@@ -50,7 +50,7 @@ const mockFavorites = [
     city: 'Ciudad de México',
     state: 'CDMX',
     addedAt: '2024-01-10',
-    image: '/placeholder-property.jpg',
+    image: '/images/properties/depto-roma.jpg',
     broker: {
       name: 'María González',
       company: 'Propiedades Premium',
@@ -70,7 +70,7 @@ const mockFavorites = [
     city: 'Ciudad de México',
     state: 'CDMX',
     addedAt: '2024-01-05',
-    image: '/placeholder-property.jpg',
+    image: '/images/properties/casa-condesa.jpg',
     broker: {
       name: 'Carlos López',
       company: 'Real Estate Solutions',
