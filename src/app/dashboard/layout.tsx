@@ -147,7 +147,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Main content */}
       <div className="lg:ml-64">
-        <main className="py-6">
+        <main className="py-6 min-h-screen">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {children}
           </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SessionProvider } from "@/components/providers/SessionProvider";
-import { Header } from "@/components/layout/Header";
+import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
 import "./globals.css";
 
 const inter = Inter({
@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <SessionProvider>
           <div className="min-h-screen bg-gray-50">
-            <Header />
+            <ConditionalHeader />
             <main>{children}</main>
           </div>
         </SessionProvider>
