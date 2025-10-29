@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Search, Home, Building2, CreditCard, Users, Shield, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { InfonavitCalculator } from '@/components/credit/InfonavitCalculator'
 
 export default function HomePage() {
   const features = [
@@ -170,6 +171,19 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* INFONAVIT Calculator */}
+      <section className="bg-white py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center px-2 mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Calcula tu crédito INFONAVIT</h2>
+            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
+              Simula tu crédito INFONAVIT y descubre cuánto puedes obtener para tu vivienda
+            </p>
+          </div>
+          <InfonavitCalculator />
         </div>
       </section>
 
