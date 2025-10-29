@@ -156,7 +156,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                         <span>{property.bathrooms} baños</span>
                       </div>
                     )}
-                    {property.parking > 0 && (
+                    {property.parking && property.parking > 0 && (
                       <div className="flex items-center">
                         <Car className="h-4 w-4 mr-1" />
                         <span>{property.parking} estacionamientos</span>
@@ -195,13 +195,13 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   <p className="text-sm text-gray-500">Área total</p>
                   <p className="text-lg font-semibold text-gray-900">{property.area} m²</p>
                 </div>
-                {property.age > 0 && (
+                {property.age && property.age > 0 && (
                   <div>
                     <p className="text-sm text-gray-500">Antigüedad</p>
                     <p className="text-lg font-semibold text-gray-900">{property.age} años</p>
                   </div>
                 )}
-                {property.floors > 0 && (
+                {property.floors && property.floors > 0 && (
                   <div>
                     <p className="text-sm text-gray-500">Pisos</p>
                     <p className="text-lg font-semibold text-gray-900">{property.floors}</p>
@@ -210,7 +210,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                 <div>
                   <p className="text-sm text-gray-500">Publicado</p>
                   <p className="text-lg font-semibold text-gray-900">
-                    {property.publishedAt.toLocaleDateString()}
+                    {property.publishedAt ? property.publishedAt.toLocaleDateString() : 'N/A'}
                   </p>
                 </div>
               </div>
