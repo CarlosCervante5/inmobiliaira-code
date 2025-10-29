@@ -85,7 +85,11 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link href="/properties">
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+                >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Volver
                 </Button>
@@ -105,12 +109,18 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                 variant="outline"
                 size="sm"
                 onClick={handleToggleFavorite}
-                className={isFavorite ? 'text-red-600 border-red-300' : ''}
+                className={`border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 ${
+                  isFavorite ? 'text-red-600 border-red-300 bg-red-50 hover:bg-red-100' : ''
+                }`}
               >
                 <Heart className={`h-4 w-4 mr-2 ${isFavorite ? 'fill-current' : ''}`} />
                 {isFavorite ? 'Guardado' : 'Guardar'}
               </Button>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+              >
                 <Share2 className="h-4 w-4 mr-2" />
                 Compartir
               </Button>
