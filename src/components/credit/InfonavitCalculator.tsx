@@ -24,10 +24,6 @@ interface InfonavitData {
   // Sección 4: Estimación de mensualidad
   tasaInteres: number
   
-  // Sección 5: Contacto
-  email: string
-  telefono: string
-  consentimiento: boolean
 }
 
 interface CalculatedResults {
@@ -51,10 +47,7 @@ export function InfonavitCalculator() {
     estadoCivil: 'soltero',
     tasaRendimiento: 5,
     plazoDeseado: 20,
-    tasaInteres: 8,
-    email: '',
-    telefono: '',
-    consentimiento: false
+    tasaInteres: 8
   })
 
   const [results, setResults] = useState<CalculatedResults | null>(null)
@@ -129,7 +122,7 @@ export function InfonavitCalculator() {
   }
 
   const nextStep = () => {
-    if (currentStep < 6) setCurrentStep(currentStep + 1)
+    if (currentStep < 5) setCurrentStep(currentStep + 1)
   }
 
   const prevStep = () => {
@@ -149,18 +142,13 @@ export function InfonavitCalculator() {
     }
   }
 
-  const enviarSolicitud = () => {
-    // Aquí se podría enviar la información a un servidor
-    alert('¡Simulación completada! Un asesor se pondrá en contacto contigo.')
-  }
 
   const steps = [
     { number: 1, title: 'Datos del trabajador', icon: User },
     { number: 2, title: 'Ahorro estimado', icon: DollarSign },
     { number: 3, title: 'Cálculo del crédito', icon: Calculator },
     { number: 4, title: 'Mensualidad', icon: Calendar },
-    { number: 5, title: 'Resultados', icon: CheckCircle },
-    { number: 6, title: 'Contacto', icon: Mail }
+    { number: 5, title: 'Resultados', icon: CheckCircle }
   ]
 
   return (
@@ -423,41 +411,6 @@ export function InfonavitCalculator() {
           </div>
         )}
 
-        {/* Step 6: Contacto */}
-        {currentStep === 6 && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Información de contacto</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                label="Correo electrónico"
-                type="email"
-                value={data.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="tu@email.com"
-              />
-              <Input
-                label="Teléfono de contacto"
-                type="tel"
-                value={data.telefono}
-                onChange={(e) => handleInputChange('telefono', e.target.value)}
-                placeholder="55 1234 5678"
-                helperText="10 dígitos"
-              />
-            </div>
-            <div className="flex items-start space-x-3">
-              <input
-                type="checkbox"
-                id="consentimiento"
-                checked={data.consentimiento}
-                onChange={(e) => handleInputChange('consentimiento', e.target.checked)}
-                className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="consentimiento" className="text-sm text-gray-700">
-                Autorizo el uso de mis datos para fines de simulación de crédito y contacto por parte de asesores inmobiliarios.
-              </label>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Navigation */}
@@ -471,27 +424,18 @@ export function InfonavitCalculator() {
           Anterior
         </Button>
         <div className="flex space-x-2">
-          {currentStep < 6 ? (
+          {currentStep < 5 ? (
             <Button onClick={nextStep} className="bg-blue-600 hover:bg-blue-700">
               Siguiente
             </Button>
           ) : (
-            <div className="flex space-x-2">
-              <Button 
-                onClick={buscarPropiedades}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                <Search className="h-4 w-4 mr-2" />
-                Buscar propiedades
-              </Button>
-              <Button 
-                onClick={enviarSolicitud}
-                disabled={!data.consentimiento || !data.email || !data.telefono}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                Enviar solicitud
-              </Button>
-            </div>
+            <Button 
+              onClick={buscarPropiedades}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Search className="h-4 w-4 mr-2" />
+              Buscar propiedades
+            </Button>
           )}
         </div>
       </div>
