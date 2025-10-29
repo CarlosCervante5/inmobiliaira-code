@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Calculator, User, DollarSign, Calendar, Home, Mail, Phone, CheckCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Calculator, User, DollarSign, Calendar, Home, Mail, Phone, CheckCircle, Search } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 
@@ -39,6 +40,7 @@ interface CalculatedResults {
 }
 
 export function InfonavitCalculator() {
+  const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [data, setData] = useState<InfonavitData>({
     nombreCompleto: '',
@@ -132,6 +134,24 @@ export function InfonavitCalculator() {
 
   const prevStep = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1)
+  }
+
+  const buscarPropiedades = () => {
+    if (results) {
+      // Redirigir a la búsqueda con el monto del crédito como filtro
+      const params = new URLSearchParams({
+        maxPrice: Math.round(results.creditoEstimado).toString(),
+        minPrice: Math.round(results.creditoEstimado * 0.5).toString(), // 50% del crédito como mínimo
+        type: 'HOUSE' // Buscar casas por defecto
+      })
+      
+      router.push(`/properties?${params.toString()}`)
+    }
+  }
+
+  const enviarSolicitud = () => {
+    // Aquí se podría enviar la información a un servidor
+    alert('¡Simulación completada! Un asesor se pondrá en contacto contigo.')
   }
 
   const steps = [
@@ -381,6 +401,25 @@ export function InfonavitCalculator() {
                 <p className="text-sm text-orange-700 mt-1">Por {data.plazoDeseado} años</p>
               </div>
             </div>
+            
+            {/* Botón de búsqueda de propiedades */}
+            <div className="mt-8 text-center">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h4 className="text-lg font-semibold text-blue-900 mb-2">
+                  ¿Listo para buscar tu nueva casa?
+                </h4>
+                <p className="text-blue-700 mb-4">
+                  Te mostraremos propiedades que se ajusten a tu presupuesto de {formatCurrency(results.creditoEstimado)}
+                </p>
+                <Button 
+                  onClick={buscarPropiedades}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                >
+                  <Search className="h-5 w-5 mr-2" />
+                  Buscar propiedades
+                </Button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -437,16 +476,22 @@ export function InfonavitCalculator() {
               Siguiente
             </Button>
           ) : (
-            <Button 
-              onClick={() => {
-                // Aquí se podría enviar la información a un servidor
-                alert('¡Simulación completada! Un asesor se pondrá en contacto contigo.')
-              }}
-              disabled={!data.consentimiento || !data.email || !data.telefono}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              Enviar solicitud
-            </Button>
+            <div className="flex space-x-2">
+              <Button 
+                onClick={buscarPropiedades}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Search className="h-4 w-4 mr-2" />
+                Buscar propiedades
+              </Button>
+              <Button 
+                onClick={enviarSolicitud}
+                disabled={!data.consentimiento || !data.email || !data.telefono}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                Enviar solicitud
+              </Button>
+            </div>
           )}
         </div>
       </div>
