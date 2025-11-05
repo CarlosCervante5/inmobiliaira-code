@@ -32,13 +32,12 @@ export async function POST(request: NextRequest) {
       data: {
         name: validatedData.name,
         email: validatedData.email,
+        password: hashedPassword,
         role: validatedData.role,
         phone: validatedData.phone,
         nss: validatedData.nss,
         license: validatedData.license,
         company: validatedData.company,
-        // Nota: En un proyecto real, necesitarías un campo password en el schema
-        // Por ahora, para el MVP, usaremos autenticación simple
       },
     })
 

@@ -30,43 +30,47 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // Usuarios de prueba para MVP sin base de datos
-        const testUsers = [
-          {
-            email: 'test@example.com',
-            password: 'password123',
-            user: {
-              id: '1',
-              email: 'test@example.com',
-              name: 'Usuario de Prueba',
-              role: 'CLIENT',
-              image: null,
-            }
-          },
-          {
-            email: 'broker@example.com',
-            password: 'password123',
-            user: {
-              id: '2',
-              email: 'broker@example.com',
-              name: 'Bróker de Prueba',
-              role: 'BROKER',
-              image: null,
-            }
+        try {
+          // Buscar usuario en la base de datos
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email }
+          })
+
+          if (!user) {
+            console.log('❌ Usuario no encontrado:', credentials.email)
+            return null
           }
-        ]
 
-        const testUser = testUsers.find(u => 
-          u.email === credentials.email && u.password === credentials.password
-        )
+          // Si el usuario no tiene password (OAuth users), denegar
+          if (!user.password) {
+            console.log('❌ Usuario sin contraseña (OAuth):', credentials.email)
+            return null
+          }
 
-        if (testUser) {
-          console.log('✅ Usuario autenticado:', testUser.user.name)
-          return testUser.user
+          // Verificar la contraseña
+          const isValidPassword = await bcrypt.compare(
+            credentials.password,
+            user.password
+          )
+
+          if (!isValidPassword) {
+            console.log('❌ Contraseña incorrecta para:', credentials.email)
+            return null
+          }
+
+          console.log('✅ Usuario autenticado:', user.name)
+          
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            image: user.image,
+          }
+        } catch (error) {
+          console.error('❌ Error en autenticación:', error)
+          return null
         }
-
-        console.log('❌ Credenciales inválidas para:', credentials.email)
-        return null
       }
     })
   ],
