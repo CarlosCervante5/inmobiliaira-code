@@ -39,7 +39,7 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isSending, setIsSending] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -69,6 +69,7 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
+        intervalRef.current = null
       }
     }
   }, [brokerId])
