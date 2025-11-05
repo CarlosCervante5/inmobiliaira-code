@@ -29,6 +29,7 @@ import { PropertyGallery } from './PropertyGallery'
 import { PropertyInfo } from './PropertyInfo'
 import { PropertyContact } from './PropertyContact'
 import { PropertyMap } from '@/components/map/PropertyMap'
+import { ChatBox } from '@/components/chat/ChatBox'
 
 interface PropertyDetailProps {
   property: PropertyWithOwner
@@ -37,9 +38,55 @@ interface PropertyDetailProps {
 export function PropertyDetail({ property }: PropertyDetailProps) {
   const [isFavorite, setIsFavorite] = useState(false)
   const [activeTab, setActiveTab] = useState<'info' | 'contact' | 'map'>('info')
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Estado para formulario de email
+  const [emailForm, setEmailForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  })
 
   const handleToggleFavorite = () => {
     setIsFavorite(!isFavorite)
+  }
+
+  const handleSendEmail = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    
+    try {
+      const response = await fetch('/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          receiverId: property.ownerId,
+          content: emailForm.message,
+          senderName: emailForm.name,
+          senderEmail: emailForm.email,
+          senderPhone: emailForm.phone,
+        }),
+      })
+
+      if (response.ok) {
+        alert('Email enviado correctamente')
+        setEmailForm({ name: '', email: '', phone: '', message: '' })
+        setIsEmailModalOpen(false)
+      } else {
+        const data = await response.json()
+        alert(data.error || 'Error al enviar el email')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error al enviar el email')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const getPropertyTypeLabel = (type: string) => {
@@ -269,7 +316,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Información del bróker */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-20">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Bróker</h3>
               <div className="flex items-start space-x-4">
                 <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -293,61 +340,170 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               </div>
               
               <div className="mt-4 space-y-2">
-                <Button className="w-full">
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
                   <Phone className="h-4 w-4 mr-2" />
                   Llamar: {property.owner.phone}
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+                  onClick={() => setIsEmailModalOpen(true)}
+                >
                   <Mail className="h-4 w-4 mr-2" />
                   Enviar email
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+                  onClick={() => setIsMessageModalOpen(true)}
+                >
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Enviar mensaje
                 </Button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Formulario de contacto rápido */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Solicitar información</h3>
-              <form className="space-y-4">
+      {/* Modal de Email */}
+      {isEmailModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-screen items-center justify-center p-4">
+            {/* Overlay */}
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-30 transition-opacity"
+              onClick={() => setIsEmailModalOpen(false)}
+            />
+            
+            {/* Modal */}
+            <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6 z-10">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Enviar Email</h3>
+                <button
+                  onClick={() => setIsEmailModalOpen(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <span className="sr-only">Cerrar</span>
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <form className="space-y-4" onSubmit={handleSendEmail}>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tu nombre
+                  </label>
                   <input
                     type="text"
-                    placeholder="Tu nombre"
+                    placeholder="Juan Pérez"
+                    value={emailForm.name}
+                    onChange={(e) => setEmailForm({ ...emailForm, name: e.target.value })}
+                    required
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tu email
+                  </label>
                   <input
                     type="email"
-                    placeholder="Tu email"
+                    placeholder="tu@email.com"
+                    value={emailForm.email}
+                    onChange={(e) => setEmailForm({ ...emailForm, email: e.target.value })}
+                    required
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tu teléfono
+                  </label>
                   <input
                     type="tel"
-                    placeholder="Tu teléfono"
+                    placeholder="+52 55 1234 5678"
+                    value={emailForm.phone}
+                    onChange={(e) => setEmailForm({ ...emailForm, phone: e.target.value })}
+                    required
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mensaje
+                  </label>
                   <textarea
-                    placeholder="Mensaje (opcional)"
-                    rows={3}
+                    placeholder="Escribe tu mensaje aquí..."
+                    rows={4}
+                    value={emailForm.message}
+                    onChange={(e) => setEmailForm({ ...emailForm, message: e.target.value })}
+                    required
                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
-                <Button className="w-full">
-                  Enviar solicitud
-                </Button>
+                <div className="flex space-x-3 pt-2">
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    className="flex-1 border-gray-300 text-gray-700"
+                    onClick={() => setIsEmailModalOpen(false)}
+                    disabled={isSubmitting}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button 
+                    type="submit"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Enviando...' : 'Enviar Email'}
+                  </Button>
+                </div>
               </form>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Modal de Chat */}
+      {isMessageModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-screen items-center justify-center p-4">
+            {/* Overlay */}
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-30 transition-opacity"
+              onClick={() => setIsMessageModalOpen(false)}
+            />
+            
+            {/* Modal */}
+            <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full z-10 overflow-hidden" style={{ height: '600px' }}>
+              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">Chat con el Broker</h3>
+                <button
+                  onClick={() => setIsMessageModalOpen(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <span className="sr-only">Cerrar</span>
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="h-[calc(100%-60px)]">
+                <ChatBox
+                  brokerId={property.ownerId}
+                  brokerName={property.owner.name || 'Broker'}
+                  propertyTitle={property.title}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

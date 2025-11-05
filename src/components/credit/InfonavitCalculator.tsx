@@ -152,17 +152,7 @@ export function InfonavitCalculator() {
   ]
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center mb-4">
-          <Home className="h-8 w-8 text-blue-600 mr-3" />
-          <h2 className="text-2xl font-bold text-gray-900">Calculadora INFONAVIT</h2>
-        </div>
-        <p className="text-gray-600">
-          Simula tu crédito INFONAVIT y descubre cuánto puedes obtener para tu vivienda
-        </p>
-      </div>
+    <div className="bg-white rounded-lg shadow-lg p-6 max-w-6xl mx-auto">
 
       {/* Progress Steps */}
       <div className="mb-8">
@@ -200,7 +190,9 @@ export function InfonavitCalculator() {
         {currentStep === 1 && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Datos del trabajador</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            {/* Nombre, Edad, Salario y Antigüedad en la misma línea */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Input
                 label="Nombre completo"
                 value={data.nombreCompleto}
@@ -228,6 +220,10 @@ export function InfonavitCalculator() {
                 onChange={(e) => handleInputChange('antiguedadLaboral', parseInt(e.target.value) || 0)}
                 placeholder="8"
               />
+            </div>
+            
+            {/* Tipo de crédito y Estado civil */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Tipo de crédito deseado

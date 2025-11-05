@@ -1,7 +1,96 @@
 import Link from 'next/link'
-import { Search, Home, Building2, CreditCard, Users, Shield, CheckCircle } from 'lucide-react'
+import { Search, Home, Building2, CreditCard, Users, Shield, CheckCircle, Bed, Bath, Maximize } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { InfonavitCalculator } from '@/components/credit/InfonavitCalculator'
+import Image from 'next/image'
+
+// Propiedades destacadas para mostrar en el home
+const featuredProperties = [
+  {
+    id: '1',
+    title: 'Casa moderna en Polanco',
+    description: 'Hermosa casa de 3 recámaras en una de las mejores zonas de la ciudad',
+    price: 2500000,
+    type: 'Casa',
+    bedrooms: 3,
+    bathrooms: 2,
+    area: 150,
+    address: 'Av. Masaryk 123, Polanco',
+    city: 'Ciudad de México',
+    state: 'CDMX',
+    image: '/images/properties/casa-polanco.jpg',
+  },
+  {
+    id: '2',
+    title: 'Departamento en Roma Norte',
+    description: 'Departamento completamente amueblado en edificio moderno',
+    price: 1800000,
+    type: 'Departamento',
+    bedrooms: 2,
+    bathrooms: 1,
+    area: 85,
+    address: 'Calle Orizaba 456, Roma Norte',
+    city: 'Ciudad de México',
+    state: 'CDMX',
+    image: '/images/properties/depto-roma.jpg',
+  },
+  {
+    id: '3',
+    title: 'Casa en Condesa',
+    description: 'Casa estilo colonial con jardín privado',
+    price: 3200000,
+    type: 'Casa',
+    bedrooms: 4,
+    bathrooms: 3,
+    area: 200,
+    address: 'Calle Amsterdam 789, Condesa',
+    city: 'Ciudad de México',
+    state: 'CDMX',
+    image: '/images/properties/casa-condesa.jpg',
+  },
+  {
+    id: '4',
+    title: 'Departamento de lujo',
+    description: 'Departamento de lujo con vista panorámica',
+    price: 4500000,
+    type: 'Departamento',
+    bedrooms: 3,
+    bathrooms: 2,
+    area: 120,
+    address: 'Av. Presidente Masaryk 567, Polanco',
+    city: 'Ciudad de México',
+    state: 'CDMX',
+    image: '/images/properties/depto-lujo.jpg',
+  },
+  {
+    id: '5',
+    title: 'Casa moderna con alberca',
+    description: 'Amplia casa moderna con alberca y jardín',
+    price: 5800000,
+    type: 'Casa',
+    bedrooms: 5,
+    bathrooms: 4,
+    area: 350,
+    address: 'Calle Bosques 234, Bosques de las Lomas',
+    city: 'Ciudad de México',
+    state: 'CDMX',
+    image: '/images/properties/casa-moderna.jpg',
+  },
+  {
+    id: '6',
+    title: 'Terreno comercial',
+    description: 'Terreno ideal para desarrollo comercial o residencial',
+    price: 5000000,
+    type: 'Terreno',
+    bedrooms: 0,
+    bathrooms: 0,
+    area: 500,
+    address: 'Av. Vasco de Quiroga 789, Santa Fe',
+    city: 'Ciudad de México',
+    state: 'CDMX',
+    image: '/images/properties/terreno.jpg',
+  },
+]
 
 export default function HomePage() {
   const features = [
@@ -36,38 +125,116 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 to-blue-800 text-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:py-16 lg:py-24 sm:px-6 lg:px-8">
-          <div className="text-center">
+      {/* Hero Section con Calculadora INFONAVIT */}
+      <section className="relative bg-gradient-to-br from-blue-600 to-blue-800 py-12 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center text-white mb-8 sm:mb-12">
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-              Encuentra tu hogar ideal
+              Calcula tu crédito INFONAVIT
             </h1>
             <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg leading-7 sm:leading-8 text-blue-100 px-2">
-              La plataforma inmobiliaria más completa de México. Busca propiedades, 
-              consulta tu crédito INFONAVIT y conecta con brókers profesionales.
+              Descubre cuánto puedes obtener para tu vivienda y encuentra tu hogar ideal
             </p>
-            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-x-6 px-4">
-              <Link href="/properties" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-gray-100">
-                  <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  <span className="text-sm sm:text-base">Buscar Propiedades</span>
-                </Button>
-              </Link>
-              <Link href="/auth/signup" className="w-full sm:w-auto">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-blue-600">
-                  <span className="text-sm sm:text-base">Registrarse Gratis</span>
-                </Button>
-              </Link>
+          </div>
+          
+          {/* Calculadora integrada en el hero */}
+          <div className="mt-8">
+            <InfonavitCalculator />
+          </div>
+        </div>
+      </section>
+
+      {/* Propiedades Destacadas */}
+      <section className="bg-gray-50 py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8 px-2">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Propiedades Disponibles</h2>
+              <p className="mt-2 text-base sm:text-lg text-gray-600">
+                Descubre las mejores opciones para tu nuevo hogar
+              </p>
             </div>
+            <Link href="/properties">
+              <Button variant="outline">
+                Ver todas
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredProperties.map((property) => (
+              <Link
+                key={property.id}
+                href={`/properties/${property.id}`}
+                className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-xl"
+              >
+                <div className="relative h-48 w-full overflow-hidden">
+                  <Image
+                    src={property.image}
+                    alt={property.title}
+                    fill
+                    className="object-cover transition-transform group-hover:scale-110"
+                  />
+                  <div className="absolute top-3 right-3 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
+                    {property.type}
+                  </div>
+                </div>
+                
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
+                    {property.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-600 line-clamp-2">
+                    {property.description}
+                  </p>
+                  
+                  <div className="mt-3 flex items-center text-xs text-gray-500">
+                    <span className="truncate">{property.address}</span>
+                  </div>
+                  
+                  <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
+                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                      {property.bedrooms > 0 && (
+                        <div className="flex items-center gap-1">
+                          <Bed className="h-4 w-4" />
+                          <span>{property.bedrooms}</span>
+                        </div>
+                      )}
+                      {property.bathrooms > 0 && (
+                        <div className="flex items-center gap-1">
+                          <Bath className="h-4 w-4" />
+                          <span>{property.bathrooms}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1">
+                        <Maximize className="h-4 w-4" />
+                        <span>{property.area}m²</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3">
+                    <p className="text-2xl font-bold text-blue-600">
+                      ${property.price.toLocaleString('es-MX')}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Search Bar */}
-      <section className="relative -mt-12 sm:-mt-16 z-10">
+      <section className="bg-white py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8">
-          <div className="rounded-lg bg-white p-4 sm:p-6 shadow-lg">
+          <div className="text-center px-2 mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Busca tu propiedad ideal</h2>
+            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
+              Utiliza nuestros filtros para encontrar exactamente lo que necesitas
+            </p>
+          </div>
+          <div className="rounded-lg bg-gray-50 p-4 sm:p-6 shadow-lg">
             <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
@@ -115,7 +282,7 @@ export default function HomePage() {
       </section>
 
       {/* Property Types */}
-      <section className="py-12 sm:py-16">
+      <section className="bg-gray-50 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center px-2">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Explora por tipo de propiedad</h2>
@@ -148,7 +315,7 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="bg-gray-50 py-12 sm:py-16">
+      <section className="bg-white py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center px-2">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">¿Por qué elegirnos?</h2>
@@ -171,19 +338,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* INFONAVIT Calculator */}
-      <section className="bg-white py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center px-2 mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Calcula tu crédito INFONAVIT</h2>
-            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
-              Simula tu crédito INFONAVIT y descubre cuánto puedes obtener para tu vivienda
-            </p>
-          </div>
-          <InfonavitCalculator />
         </div>
       </section>
 

@@ -16,3 +16,4 @@ export const prisma = globalForPrisma.prisma ?? (
 if (process.env.NODE_ENV !== 'production' && process.env.DATABASE_URL) {
   globalForPrisma.prisma = prisma
 }
+

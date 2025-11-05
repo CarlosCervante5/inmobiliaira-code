@@ -34,12 +34,8 @@ export function Header() {
         <div className="flex h-14 sm:h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
-            <Link href="/" className="flex items-center space-x-1.5 sm:space-x-2">
-              <Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-              <span className="text-base sm:text-xl font-bold text-gray-900">
-                <span className="hidden sm:inline">Catálogo Inmobiliario</span>
-                <span className="sm:hidden">Catálogo</span>
-              </span>
+            <Link href="/" className="flex items-center">
+              <Building2 className="h-8 w-8 text-blue-600" />
             </Link>
           </div>
 
@@ -83,7 +79,7 @@ export function Header() {
                 </button>
                 
                 {/* Dropdown */}
-                <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                   {userNavigation.map((item) => (
                     <Link
                       key={item.name}
@@ -211,3 +207,4 @@ export function Header() {
     </header>
   )
 }
+

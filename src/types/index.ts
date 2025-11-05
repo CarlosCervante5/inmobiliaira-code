@@ -71,3 +71,4 @@ export interface PropertyInquiryFormData {
   phone?: string
   email?: string
 }
+

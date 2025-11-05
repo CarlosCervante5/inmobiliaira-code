@@ -88,3 +88,4 @@ export const messageSchema = z.object({
   receiverId: z.string().min(1, 'El destinatario es requerido'),
   content: z.string().min(1, 'El mensaje no puede estar vacío'),
 })
+
