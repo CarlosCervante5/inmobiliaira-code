@@ -101,12 +101,12 @@ export function Header() {
             ) : (
               <div className="hidden sm:flex items-center space-x-2">
                 <Link href="/auth/signin">
-                  <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+                  <Button variant="ghost" size="sm" className="text-xs sm:text-sm text-gray-700 hover:bg-gray-100">
                     Iniciar Sesión
                   </Button>
                 </Link>
                 <Link href="/auth/signup">
-                  <Button size="sm" className="text-xs sm:text-sm">
+                  <Button size="sm" className="text-xs sm:text-sm bg-blue-600 text-white hover:bg-blue-700">
                     Registrarse
                   </Button>
                 </Link>
