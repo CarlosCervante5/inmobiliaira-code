@@ -244,6 +244,91 @@ async function main() {
   console.log('  ✅ Mensajes de ejemplo creados')
 
   // ====================
+  // CREAR LEADS DE EJEMPLO
+  // ====================
+  console.log('\n📊 Creando leads de ejemplo...')
+
+  await prisma.lead.create({
+    data: {
+      name: 'Roberto Sánchez',
+      email: 'roberto@example.com',
+      phone: '+52 55 6666 1111',
+      source: 'WEB_FORM',
+      status: 'NEW',
+      priority: 'HIGH',
+      propertyId: property1.id,
+      interestedIn: 'Casa',
+      budget: 3000000,
+      message: 'Me interesa la casa en Polanco. ¿Podríamos agendar una visita?',
+      brokerId: broker1.id,
+    },
+  }).catch(() => console.log('  ℹ️  Lead ya existe'))
+
+  await prisma.lead.create({
+    data: {
+      name: 'Laura Mendoza',
+      email: 'laura@example.com',
+      phone: '+52 55 6666 2222',
+      source: 'INFONAVIT_CALC',
+      status: 'QUALIFIED',
+      priority: 'MEDIUM',
+      interestedIn: 'Departamento',
+      budget: 1500000,
+      message: 'Calculé mi crédito Infonavit y puedo obtener hasta 1.5M. Busco departamento en Roma Norte.',
+      brokerId: broker2.id,
+    },
+  }).catch(() => console.log('  ℹ️  Lead ya existe'))
+
+  await prisma.lead.create({
+    data: {
+      name: 'Pedro Gutiérrez',
+      email: 'pedro@example.com',
+      phone: '+52 55 6666 3333',
+      source: 'CHAT',
+      status: 'IN_NEGOTIATION',
+      priority: 'URGENT',
+      propertyId: property2.id,
+      budget: 1800000,
+      message: 'Estoy muy interesado en el departamento. ¿Podemos negociar el precio?',
+      brokerId: broker2.id,
+      lastContactDate: new Date(),
+    },
+  }).catch(() => console.log('  ℹ️  Lead ya existe'))
+
+  await prisma.lead.create({
+    data: {
+      name: 'Sofía Torres',
+      email: 'sofia@example.com',
+      phone: '+52 55 6666 4444',
+      source: 'PROPERTY_VIEW',
+      status: 'CONTACTED',
+      priority: 'LOW',
+      interestedIn: 'Terreno',
+      budget: 6000000,
+      message: 'Vi el terreno en Santa Fe. Me gustaría más información.',
+      brokerId: broker1.id,
+    },
+  }).catch(() => console.log('  ℹ️  Lead ya existe'))
+
+  await prisma.lead.create({
+    data: {
+      name: 'Miguel Ángel Rojas',
+      email: 'miguel@example.com',
+      phone: '+52 55 6666 5555',
+      source: 'MANUAL',
+      status: 'FOLLOW_UP',
+      priority: 'MEDIUM',
+      interestedIn: 'Casa',
+      budget: 4000000,
+      message: 'Cliente referido por Ana López. Busca casa familiar.',
+      brokerId: broker1.id,
+      nextFollowUpDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // En 2 días
+    },
+  }).catch(() => console.log('  ℹ️  Lead ya existe'))
+
+  console.log('  ✅ Leads de ejemplo creados')
+
+  // ====================
   // RESUMEN
   // ====================
   console.log('\n' + '='.repeat(50))
@@ -273,6 +358,7 @@ async function main() {
   console.log('   ✅ 2 Clientes')
   console.log('   ✅ 3 Propiedades')
   console.log('   ✅ 4 Mensajes de ejemplo')
+  console.log('   ✅ 5 Leads de ejemplo')
   
   console.log('\n📱 USA EN LA APP MÓVIL:')
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')

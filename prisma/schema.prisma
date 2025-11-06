@@ -57,6 +57,7 @@ model User {
   messages      Message[] @relation("MessageSender")
   receivedMessages Message[] @relation("MessageReceiver")
   propertyInquiries PropertyInquiry[]
+  leads         Lead[] @relation("BrokerLeads")
 
   // Campos específicos para Cliente
   nss           String?
@@ -120,6 +121,7 @@ model Property {
   owner       User @relation("PropertyOwner", fields: [ownerId], references: [id])
   favorites   Favorite[]
   inquiries   PropertyInquiry[]
+  leads       Lead[]
 }
 
 model Favorite {
@@ -173,6 +175,66 @@ model Message {
   
   sender      User @relation("MessageSender", fields: [senderId], references: [id])
   receiver    User @relation("MessageReceiver", fields: [receiverId], references: [id])
+}
+
+model Lead {
+  id            String      @id @default(cuid())
+  name          String
+  email         String
+  phone         String
+  source        LeadSource  @default(WEB_FORM)
+  status        LeadStatus  @default(NEW)
+  priority      LeadPriority @default(MEDIUM)
+  
+  // Información de interés
+  propertyId    String?
+  interestedIn  String?     // Tipo de propiedad que busca
+  budget        Float?
+  message       String?     @db.Text
+  
+  // Asignación
+  brokerId      String?
+  broker        User?       @relation("BrokerLeads", fields: [brokerId], references: [id])
+  
+  // Seguimiento
+  lastContactDate DateTime?
+  nextFollowUpDate DateTime?
+  notes         String?     @db.Text
+  
+  // Metadatos
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  convertedAt   DateTime?   // Cuando se convirtió en cliente
+  
+  property      Property?   @relation(fields: [propertyId], references: [id])
+}
+
+enum LeadSource {
+  WEB_FORM        // Formulario de contacto
+  CHAT            // Chat con el broker
+  INFONAVIT_CALC  // Calculadora de Infonavit
+  PROPERTY_VIEW   // Visualización de propiedad
+  PHONE_CALL      // Llamada telefónica
+  EMAIL           // Email directo
+  REFERRAL        // Referido
+  MANUAL          // Agregado manualmente
+}
+
+enum LeadStatus {
+  NEW             // Nuevo lead
+  CONTACTED       // Contactado
+  QUALIFIED       // Calificado
+  IN_NEGOTIATION  // En negociación
+  WON             // Ganado/Convertido
+  LOST            // Perdido
+  FOLLOW_UP       // Requiere seguimiento
+}
+
+enum LeadPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }
 
 enum UserRole {
