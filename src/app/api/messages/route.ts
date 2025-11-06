@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { getAuthenticatedUser } from '@/lib/auth-helpers'
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authOptions)
+    const user = await getAuthenticatedUser(request)
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json(
         { error: 'No autorizado' },
         { status: 401 }
@@ -27,11 +26,11 @@ export async function POST(request: Request) {
     // Crear el mensaje
     const message = await prisma.message.create({
       data: {
-        senderId: session.user.id,
+        senderId: user.id,
         receiverId,
         content: `
-Nombre: ${senderName || session.user.name || 'No proporcionado'}
-Email: ${senderEmail || session.user.email || 'No proporcionado'}
+Nombre: ${senderName || user.name || 'No proporcionado'}
+Email: ${senderEmail || user.email || 'No proporcionado'}
 Teléfono: ${senderPhone || 'No proporcionado'}
 
 Mensaje:
@@ -69,9 +68,9 @@ ${content}
 
 export async function GET(request: Request) {
   try {
-    const session = await getServerSession(authOptions)
+    const user = await getAuthenticatedUser(request)
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json(
         { error: 'No autorizado' },
         { status: 401 }
@@ -82,8 +81,8 @@ export async function GET(request: Request) {
     const messages = await prisma.message.findMany({
       where: {
         OR: [
-          { senderId: session.user.id },
-          { receiverId: session.user.id },
+          { senderId: user.id },
+          { receiverId: user.id },
         ],
       },
       include: {

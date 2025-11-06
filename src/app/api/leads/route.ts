@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { getAuthenticatedUser } from '@/lib/auth-helpers'
 
 // GET - Obtener leads del broker autenticado
 export async function GET(request: Request) {
   try {
-    const session = await getServerSession(authOptions)
+    const user = await getAuthenticatedUser(request)
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json(
         { error: 'No autorizado' },
         { status: 401 }
@@ -22,7 +21,7 @@ export async function GET(request: Request) {
 
     // Filtros
     const where: any = {
-      brokerId: session.user.id
+      brokerId: user.id
     }
 
     if (status) where.status = status
@@ -83,9 +82,9 @@ export async function GET(request: Request) {
 // POST - Crear nuevo lead
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authOptions)
+    const user = await getAuthenticatedUser(request)
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json(
         { error: 'No autorizado' },
         { status: 401 }
@@ -124,7 +123,7 @@ export async function POST(request: Request) {
         interestedIn: interestedIn || null,
         budget: budget || null,
         message: message || null,
-        brokerId: brokerId || session.user.id,
+        brokerId: brokerId || user.id,
         status: 'NEW',
       },
       include: {
