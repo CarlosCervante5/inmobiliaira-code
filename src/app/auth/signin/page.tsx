@@ -141,7 +141,7 @@ export default function SignInPage() {
           <div>
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-blue-600 text-white hover:bg-blue-700"
               loading={isLoading}
             >
               Iniciar Sesión
@@ -162,7 +162,7 @@ export default function SignInPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full"
+                className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
                 onClick={handleGoogleSignIn}
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
