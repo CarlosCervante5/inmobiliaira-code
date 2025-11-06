@@ -58,12 +58,12 @@ export async function GET(request: Request) {
     // Estadísticas
     const stats = {
       total: leads.length,
-      new: leads.filter(l => l.status === 'NEW').length,
-      contacted: leads.filter(l => l.status === 'CONTACTED').length,
-      qualified: leads.filter(l => l.status === 'QUALIFIED').length,
-      inNegotiation: leads.filter(l => l.status === 'IN_NEGOTIATION').length,
-      won: leads.filter(l => l.status === 'WON').length,
-      lost: leads.filter(l => l.status === 'LOST').length,
+      new: leads.filter((l: any) => l.status === 'NEW').length,
+      contacted: leads.filter((l: any) => l.status === 'CONTACTED').length,
+      qualified: leads.filter((l: any) => l.status === 'QUALIFIED').length,
+      inNegotiation: leads.filter((l: any) => l.status === 'IN_NEGOTIATION').length,
+      won: leads.filter((l: any) => l.status === 'WON').length,
+      lost: leads.filter((l: any) => l.status === 'LOST').length,
     }
 
     return NextResponse.json({
