@@ -59,17 +59,19 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
     setIsSubmitting(true)
     
     try {
-      const response = await fetch('/api/messages', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          receiverId: property.ownerId,
-          content: emailForm.message,
-          senderName: emailForm.name,
-          senderEmail: emailForm.email,
-          senderPhone: emailForm.phone,
+          propertyId: property.id,
+          brokerId: property.ownerId,
+          name: emailForm.name,
+          email: emailForm.email,
+          phone: emailForm.phone,
+          message: emailForm.message,
+          contactMethod: 'email',
         }),
       })
 

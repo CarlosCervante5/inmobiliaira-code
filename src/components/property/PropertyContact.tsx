@@ -45,11 +45,36 @@ export function PropertyContact({ property }: PropertyContactProps) {
     e.preventDefault()
     setIsSubmitting(true)
     
-    // Simular envío
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          propertyId: property.id,
+          brokerId: property.ownerId,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+          contactMethod: formData.contactMethod,
+          visitDate: formData.visitDate || null,
+          visitTime: formData.visitTime || null,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al enviar la consulta')
+      }
+
+      setIsSubmitted(true)
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Hubo un error al enviar tu consulta. Por favor intenta nuevamente.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const contactMethods = [
