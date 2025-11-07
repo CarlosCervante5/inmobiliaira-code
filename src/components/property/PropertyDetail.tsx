@@ -374,7 +374,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
           <div className="flex min-h-screen items-center justify-center p-4">
             {/* Overlay */}
             <div 
-              className="fixed inset-0 bg-black bg-opacity-30 transition-opacity"
+              className="fixed inset-0 bg-black bg-opacity-75 transition-opacity"
               onClick={() => setIsEmailModalOpen(false)}
             />
             
@@ -476,7 +476,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
           <div className="flex min-h-screen items-center justify-center p-4">
             {/* Overlay */}
             <div 
-              className="fixed inset-0 bg-black bg-opacity-30 transition-opacity"
+              className="fixed inset-0 bg-black bg-opacity-75 transition-opacity"
               onClick={() => setIsMessageModalOpen(false)}
             />
             
