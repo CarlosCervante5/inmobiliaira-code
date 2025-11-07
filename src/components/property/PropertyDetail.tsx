@@ -500,6 +500,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   brokerId={property.ownerId}
                   brokerName={property.owner.name || 'Broker'}
                   propertyTitle={property.title}
+                  propertyId={property.id}
                 />
               </div>
             </div>

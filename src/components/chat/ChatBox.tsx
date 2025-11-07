@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useSession } from 'next-auth/react'
-import { Send, Loader2 } from 'lucide-react'
+import { Send, Loader2, User, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 interface Message {
@@ -30,14 +30,23 @@ interface ChatBoxProps {
   brokerId: string
   brokerName: string
   propertyTitle?: string
+  propertyId?: string
 }
 
-export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
+interface GuestInfo {
+  name: string
+  email: string
+}
+
+export function ChatBox({ brokerId, brokerName, propertyTitle, propertyId }: ChatBoxProps) {
   const { data: session } = useSession()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isSending, setIsSending] = useState(false)
+  const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null)
+  const [showGuestForm, setShowGuestForm] = useState(false)
+  const [guestFormData, setGuestFormData] = useState({ name: '', email: '' })
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -45,7 +54,19 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  // Cargar datos de invitado desde localStorage
+  useEffect(() => {
+    const storedGuest = localStorage.getItem('guestChatInfo')
+    if (storedGuest) {
+      setGuestInfo(JSON.parse(storedGuest))
+    } else if (!session) {
+      setShowGuestForm(true)
+    }
+  }, [session])
+
   const fetchMessages = async () => {
+    if (!session) return // No cargar mensajes para invitados
+    
     try {
       const response = await fetch(`/api/chat?otherUserId=${brokerId}`)
       if (response.ok) {
@@ -58,13 +79,15 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
   }
 
   useEffect(() => {
-    setIsLoading(true)
-    fetchMessages().finally(() => setIsLoading(false))
+    if (session) {
+      setIsLoading(true)
+      fetchMessages().finally(() => setIsLoading(false))
 
-    // Polling cada 3 segundos para nuevos mensajes
-    intervalRef.current = setInterval(() => {
-      fetchMessages()
-    }, 3000)
+      // Polling cada 3 segundos para nuevos mensajes
+      intervalRef.current = setInterval(() => {
+        fetchMessages()
+      }, 3000)
+    }
 
     return () => {
       if (intervalRef.current) {
@@ -72,11 +95,25 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
         intervalRef.current = null
       }
     }
-  }, [brokerId])
+  }, [brokerId, session])
 
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  const handleGuestFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!guestFormData.name.trim() || !guestFormData.email.trim()) return
+
+    const guest = {
+      name: guestFormData.name.trim(),
+      email: guestFormData.email.trim(),
+    }
+    
+    localStorage.setItem('guestChatInfo', JSON.stringify(guest))
+    setGuestInfo(guest)
+    setShowGuestForm(false)
+  }
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -86,24 +123,75 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
     setIsSending(true)
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          receiverId: brokerId,
-          content: newMessage.trim(),
-        }),
-      })
+      // Si es usuario autenticado, usar /api/chat
+      if (session) {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            receiverId: brokerId,
+            content: newMessage.trim(),
+          }),
+        })
 
-      if (response.ok) {
-        const message = await response.json()
-        setMessages([...messages, message])
-        setNewMessage('')
-      } else {
-        const data = await response.json()
-        alert(data.error || 'Error al enviar el mensaje')
+        if (response.ok) {
+          const message = await response.json()
+          setMessages([...messages, message])
+          setNewMessage('')
+        } else {
+          const data = await response.json()
+          alert(data.error || 'Error al enviar el mensaje')
+        }
+      } 
+      // Si es invitado, usar /api/contact
+      else if (guestInfo) {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            brokerId,
+            propertyId: propertyId || null,
+            name: guestInfo.name,
+            email: guestInfo.email,
+            phone: '',
+            message: newMessage.trim(),
+            contactMethod: 'chat',
+          }),
+        })
+
+        if (response.ok) {
+          // Para invitados, mostrar el mensaje localmente
+          const tempMessage = {
+            id: Date.now().toString(),
+            senderId: 'guest',
+            receiverId: brokerId,
+            content: newMessage.trim(),
+            isRead: false,
+            createdAt: new Date().toISOString(),
+            sender: {
+              id: 'guest',
+              name: guestInfo.name,
+              email: guestInfo.email,
+              image: null,
+            },
+            receiver: {
+              id: brokerId,
+              name: brokerName,
+              email: null,
+              image: null,
+            }
+          }
+          setMessages([...messages, tempMessage])
+          setNewMessage('')
+          alert('Mensaje enviado. El bróker recibirá tu consulta por correo.')
+        } else {
+          const data = await response.json()
+          alert(data.error || 'Error al enviar el mensaje')
+        }
       }
     } catch (error) {
       console.error('Error:', error)
@@ -142,6 +230,76 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
     }
   }
 
+  // Formulario para invitados
+  if (showGuestForm && !session) {
+    return (
+      <div className="flex flex-col h-full p-6 bg-gray-50">
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+            <div className="text-center mb-6">
+              <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                <User className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Iniciar conversación
+              </h3>
+              <p className="text-sm text-gray-600">
+                Proporciona tu información para contactar al bróker
+              </p>
+            </div>
+
+            <form onSubmit={handleGuestFormSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tu nombre *
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="text"
+                    required
+                    value={guestFormData.name}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, name: e.target.value })}
+                    placeholder="Juan Pérez"
+                    className="w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tu correo electrónico *
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="email"
+                    required
+                    value={guestFormData.email}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, email: e.target.value })}
+                    placeholder="tu@email.com"
+                    className="w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Continuar al chat
+              </Button>
+
+              <p className="text-xs text-gray-500 text-center">
+                Tu información solo será usada para esta conversación
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col h-full">
       {/* Header del chat */}
@@ -149,6 +307,11 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
         <h3 className="font-semibold text-gray-900">{brokerName}</h3>
         {propertyTitle && (
           <p className="text-sm text-gray-600 truncate">Consulta sobre: {propertyTitle}</p>
+        )}
+        {guestInfo && !session && (
+          <p className="text-xs text-blue-600 mt-1">
+            Conectado como: {guestInfo.name}
+          </p>
         )}
       </div>
 
@@ -168,7 +331,9 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
         ) : (
           <>
             {messages.map((message) => {
-              const isOwn = message.senderId === session?.user?.id
+              const isOwn = session 
+                ? message.senderId === session?.user?.id
+                : message.senderId === 'guest'
               
               return (
                 <div
@@ -226,4 +391,3 @@ export function ChatBox({ brokerId, brokerName, propertyTitle }: ChatBoxProps) {
     </div>
   )
 }
-
