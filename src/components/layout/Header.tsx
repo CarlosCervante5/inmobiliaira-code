@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
-import { Menu, X, Search, User, LogOut, Home, Building2 } from 'lucide-react'
+import { Menu, X, Search, User, LogOut, Home, Building2, Wrench } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 export function Header() {
@@ -13,6 +13,7 @@ export function Header() {
   const navigation = [
     { name: 'Inicio', href: '/', icon: Home },
     { name: 'Propiedades', href: '/properties', icon: Building2 },
+    { name: 'Servicios', href: '/services', icon: Wrench },
   ]
 
   const userNavigation = [

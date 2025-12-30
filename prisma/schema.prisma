@@ -267,3 +267,118 @@ enum InquiryStatus {
   COMPLETED
   CANCELLED
 }
+
+model ServiceCategory {
+  id          String    @id @default(cuid())
+  name        String
+  description String?   @db.Text
+  icon        String?
+  color       String?
+  slug        String    @unique
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  services    Service[]
+}
+
+model Service {
+  id          String    @id @default(cuid())
+  name        String
+  description String    @db.Text
+  categoryId  String
+  category    ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  // Precios y duración
+  basePrice   Float?
+  priceRange  String?   // Ej: "Desde $400"
+  duration    String?   // Ej: "2-3 horas"
+  estimatedHours Float?
+  
+  // Estado
+  isActive    Boolean   @default(true)
+  isPopular   Boolean   @default(false)
+  
+  // Metadatos
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relaciones
+  providers   ServiceProvider[] @relation("ProviderServices")
+  bookings    ServiceBooking[]
+}
+
+model ServiceProvider {
+  id          String    @id @default(cuid())
+  name        String
+  email       String    @unique
+  phone       String
+  address     String?
+  
+  // Información profesional
+  bio         String?   @db.Text
+  specialties String[]  // Servicios que puede realizar
+  experience  Int?      // Años de experiencia
+  rating      Float?    @default(0)
+  totalReviews Int      @default(0)
+  
+  // Estado
+  isActive    Boolean   @default(true)
+  isVerified  Boolean   @default(false)
+  
+  // Disponibilidad
+  availability Json?    // Horarios de disponibilidad
+  
+  // Metadatos
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relaciones
+  serviceIds  String[]  // IDs de servicios que puede realizar
+  services    Service[] @relation("ProviderServices")
+  bookings    ServiceBooking[]
+}
+
+model ServiceBooking {
+  id          String    @id @default(cuid())
+  
+  // Cliente
+  clientName  String
+  clientEmail String
+  clientPhone String
+  clientAddress String? @db.Text
+  
+  // Servicio
+  serviceId   String
+  service     Service @relation(fields: [serviceId], references: [id])
+  
+  // Proveedor
+  providerId  String?
+  provider    ServiceProvider? @relation(fields: [providerId], references: [id])
+  
+  // Detalles de la reserva
+  scheduledDate DateTime
+  scheduledTime String?  // Hora específica
+  notes       String?   @db.Text
+  
+  // Estado
+  status      BookingStatus @default(PENDING)
+  
+  // Precio
+  quotedPrice Float?
+  finalPrice  Float?
+  
+  // Metadatos
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+}
+
+enum BookingStatus {
+  PENDING       // Pendiente de confirmación
+  CONFIRMED     // Confirmada
+  IN_PROGRESS   // En progreso
+  COMPLETED     // Completada
+  CANCELLED     // Cancelada
+  REVIEWED      // Completada y revisada
+}

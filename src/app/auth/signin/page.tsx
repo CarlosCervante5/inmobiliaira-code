@@ -15,6 +15,7 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [creatingAdmin, setCreatingAdmin] = useState(false)
   const router = useRouter()
 
   const {
@@ -37,17 +38,30 @@ export default function SignInPage() {
       })
 
       if (result?.error) {
-        setError('Credenciales inválidas')
-      } else {
+        console.error('Error de autenticación:', result.error)
+        // Mostrar mensaje más específico según el error
+        if (result.error === 'CredentialsSignin') {
+          setError('Credenciales inválidas. Verifica tu email y contraseña.')
+        } else {
+          setError(`Error: ${result.error}`)
+        }
+      } else if (result?.ok) {
+        // Esperar un momento para que la sesión se establezca
+        await new Promise(resolve => setTimeout(resolve, 100))
         const session = await getSession()
-        if (session?.user?.role === 'BROKER') {
+        if (session?.user?.role === 'ADMIN') {
+          router.push('/admin')
+        } else if (session?.user?.role === 'BROKER') {
           router.push('/dashboard/properties')
         } else {
           router.push('/dashboard')
         }
+      } else {
+        setError('Error desconocido al iniciar sesión')
       }
     } catch (error) {
-      setError('Error al iniciar sesión')
+      console.error('Error en onSubmit:', error)
+      setError('Error al iniciar sesión. Por favor, intenta de nuevo.')
     } finally {
       setIsLoading(false)
     }
@@ -55,6 +69,26 @@ export default function SignInPage() {
 
   const handleGoogleSignIn = () => {
     signIn('google', { callbackUrl: '/dashboard' })
+  }
+
+  const handleCreateAdmin = async () => {
+    setCreatingAdmin(true)
+    setError('')
+    try {
+      const response = await fetch('/api/admin/create-admin', {
+        method: 'POST',
+      })
+      const data = await response.json()
+      if (data.success) {
+        setError('✅ Admin creado exitosamente. Ahora puedes iniciar sesión.')
+      } else {
+        setError(`Error: ${data.error || 'No se pudo crear el admin'}`)
+      }
+    } catch (error) {
+      setError('Error al crear admin')
+    } finally {
+      setCreatingAdmin(false)
+    }
   }
 
   return (
@@ -79,8 +113,31 @@ export default function SignInPage() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
+            <div className={`rounded-md p-4 ${
+              error.startsWith('✅') ? 'bg-green-50' : 'bg-red-50'
+            }`}>
+              <div className={`text-sm ${
+                error.startsWith('✅') ? 'text-green-700' : 'text-red-700'
+              }`}>{error}</div>
+            </div>
+          )}
+
+          {/* Botón para crear admin en desarrollo */}
+          {typeof window !== 'undefined' && window.location.hostname === 'localhost' && (
+            <div className="rounded-md bg-blue-50 p-4 border border-blue-200">
+              <p className="text-sm text-blue-800 mb-2">
+                ¿No tienes usuario admin? Créalo ahora:
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleCreateAdmin}
+                loading={creatingAdmin}
+                className="w-full"
+              >
+                Crear Usuario Admin
+              </Button>
             </div>
           )}
           

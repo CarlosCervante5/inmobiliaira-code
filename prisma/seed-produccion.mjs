@@ -16,6 +16,29 @@ async function main() {
   console.log('\n🌱 Iniciando seed de base de datos de PRODUCCIÓN...\n')
 
   // ====================
+  // CREAR ADMIN
+  // ====================
+  console.log('👑 Creando administrador...')
+
+  const adminPassword = await bcrypt.hash('Admin123456', 12)
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@test.com' },
+    update: {
+      password: adminPassword,
+      name: 'Administrador',
+      role: 'ADMIN',
+    },
+    create: {
+      email: 'admin@test.com',
+      name: 'Administrador',
+      password: adminPassword,
+      role: 'ADMIN',
+      phone: '+52 55 0000 0000',
+    },
+  })
+  console.log('  ✅ Admin creado:', admin.email)
+
+  // ====================
   // CREAR BROKERS
   // ====================
   console.log('👨‍💼 Creando brokers...')
@@ -335,6 +358,13 @@ async function main() {
   console.log('✅ SEED COMPLETADO EXITOSAMENTE')
   console.log('='.repeat(50))
   
+  console.log('\n🔑 CREDENCIALES DE ADMIN:')
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+  console.log('\n👑 Administrador:')
+  console.log('   📧 Email:    admin@test.com')
+  console.log('   🔒 Password: Admin123456')
+  console.log('   🔗 Panel:    /admin')
+  
   console.log('\n🔑 CREDENCIALES DE BROKERS:')
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
   console.log('\n👨‍💼 Broker 1:')
@@ -354,6 +384,7 @@ async function main() {
   
   console.log('\n📊 DATOS CREADOS:')
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+  console.log('   ✅ 1 Administrador')
   console.log('   ✅ 2 Brokers')
   console.log('   ✅ 2 Clientes')
   console.log('   ✅ 3 Propiedades')

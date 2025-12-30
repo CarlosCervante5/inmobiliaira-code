@@ -6,10 +6,11 @@ import { Header } from './Header'
 export function ConditionalHeader() {
   const pathname = usePathname()
   
-  // Ocultar header en páginas del dashboard
+  // Ocultar header en páginas del dashboard y admin (tienen sus propios navbars)
   const isDashboardPage = pathname?.startsWith('/dashboard')
+  const isAdminPage = pathname?.startsWith('/admin')
   
-  if (isDashboardPage) {
+  if (isDashboardPage || isAdminPage) {
     return null
   }
   

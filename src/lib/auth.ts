@@ -31,6 +31,12 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
+          // Verificar que Prisma esté disponible
+          if (!prisma) {
+            console.error('❌ Prisma no está inicializado. Verifica DATABASE_URL')
+            throw new Error('Base de datos no configurada')
+          }
+
           // Buscar usuario en la base de datos
           const user = await prisma.user.findUnique({
             where: { email: credentials.email }
@@ -48,6 +54,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Verificar la contraseña
+          console.log('🔍 Comparando contraseñas...')
           const isValidPassword = await bcrypt.compare(
             credentials.password,
             user.password
@@ -55,10 +62,14 @@ export const authOptions: NextAuthOptions = {
 
           if (!isValidPassword) {
             console.log('❌ Contraseña incorrecta para:', credentials.email)
+            console.log('   Password recibida:', credentials.password.substring(0, 3) + '...')
+            console.log('   Hash en DB:', user.password.substring(0, 20) + '...')
             return null
           }
 
-          console.log('✅ Usuario autenticado:', user.name)
+          console.log('✅ Contraseña válida')
+
+          console.log('✅ Usuario autenticado:', user.name, 'Rol:', user.role)
           
           return {
             id: user.id,
@@ -69,6 +80,10 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (error) {
           console.error('❌ Error en autenticación:', error)
+          // En desarrollo, mostrar más detalles del error
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Detalles del error:', error)
+          }
           return null
         }
       }

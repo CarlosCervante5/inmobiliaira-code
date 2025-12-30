@@ -47,6 +47,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return null
   }
 
+  // Redirigir admin al panel de administración
+  if (session.user?.role === 'ADMIN') {
+    router.push('/admin')
+    return null
+  }
+
   const isBroker = session.user?.role === 'BROKER'
 
   const navigation = isBroker ? [

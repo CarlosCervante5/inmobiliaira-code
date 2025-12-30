@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Search, Home, Building2, CreditCard, Users, Shield, CheckCircle, Bed, Bath, Maximize } from 'lucide-react'
+import { Search, Home, Building2, CreditCard, Users, Shield, CheckCircle, Bed, Bath, Maximize, Wrench, Sparkles, Hammer } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { InfonavitCalculator } from '@/components/credit/InfonavitCalculator'
 import Image from 'next/image'
@@ -314,6 +314,54 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Servicios de Mantenimiento */}
+      <section className="bg-white py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8 px-2">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Servicios de Mantenimiento</h2>
+              <p className="mt-2 text-base sm:text-lg text-gray-600">
+                La forma fácil y confiable de cuidar tu hogar
+              </p>
+            </div>
+            <Link href="/services">
+              <Button variant="outline">
+                Ver todos
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { name: 'Limpieza', icon: Sparkles, description: 'Limpieza profesional', color: 'bg-blue-100 text-blue-600', href: '/services/limpieza' },
+              { name: 'Instalación', icon: Wrench, description: 'Montaje e instalación', color: 'bg-green-100 text-green-600', href: '/services/instalacion' },
+              { name: 'Handyman', icon: Hammer, description: 'Reparaciones generales', color: 'bg-orange-100 text-orange-600', href: '/services/handyman' },
+              { name: 'Renovaciones', icon: Home, description: 'Remodelación completa', color: 'bg-purple-100 text-purple-600', href: '/services/renovaciones' },
+            ].map((service, index) => (
+              <Link
+                key={index}
+                href={service.href}
+                className="group relative overflow-hidden rounded-lg bg-white border-2 border-gray-200 p-6 transition-all hover:border-blue-500 hover:shadow-lg"
+              >
+                <div className={`${service.color} w-12 h-12 rounded-lg flex items-center justify-center mb-4`}>
+                  <service.icon className="h-6 w-6" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
+                  {service.name}
+                </h3>
+                <p className="mt-2 text-sm text-gray-600">
+                  {service.description}
+                </p>
+                <div className="mt-4 flex items-center text-sm text-blue-600 group-hover:text-blue-700">
+                  Ver servicios
+                  <span className="ml-2">→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="bg-white py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -381,6 +429,7 @@ export default function HomePage() {
               <h4 className="text-sm font-semibold text-white">Enlaces</h4>
               <ul className="mt-2 space-y-2 text-sm text-gray-400">
                 <li><Link href="/properties" className="hover:text-white">Propiedades</Link></li>
+                <li><Link href="/services" className="hover:text-white">Servicios de Mantenimiento</Link></li>
                 <li><Link href="/about" className="hover:text-white">Acerca de</Link></li>
                 <li><Link href="/contact" className="hover:text-white">Contacto</Link></li>
               </ul>
