@@ -78,11 +78,22 @@ export const authOptions: NextAuthOptions = {
             role: user.role,
             image: user.image,
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error('❌ Error en autenticación:', error)
+          // En producción también mostrar detalles críticos
+          console.error('Error type:', error?.constructor?.name)
+          console.error('Error message:', error?.message)
+          
+          // Si es un error de conexión a la base de datos, loguear más detalles
+          if (error?.code === 'P1001' || error?.message?.includes('DATABASE_URL')) {
+            console.error('⚠️ Error de conexión a la base de datos')
+            console.error('DATABASE_URL configurado:', !!process.env.DATABASE_URL)
+          }
+          
           // En desarrollo, mostrar más detalles del error
           if (process.env.NODE_ENV === 'development') {
-            console.error('Detalles del error:', error)
+            console.error('Detalles completos del error:', error)
+            console.error('Stack trace:', error?.stack)
           }
           return null
         }
@@ -110,5 +121,10 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/auth/signin',
   },
-  secret: process.env.NEXTAUTH_SECRET || 'development-secret-key-change-in-production',
+  secret: process.env.NEXTAUTH_SECRET || (() => {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('⚠️ NEXTAUTH_SECRET no está configurado en producción. Esto causará errores de autenticación.')
+    }
+    return 'development-secret-key-change-in-production'
+  })(),
 }
