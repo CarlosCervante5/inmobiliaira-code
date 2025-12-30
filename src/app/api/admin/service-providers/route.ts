@@ -23,7 +23,7 @@ export async function GET() {
 
     // Obtener servicios para cada proveedor por separado (más robusto)
     const providersWithServices = await Promise.all(
-      providers.map(async (provider) => {
+      providers.map(async (provider: any) => {
         try {
           const services = await prisma.service.findMany({
             where: {
