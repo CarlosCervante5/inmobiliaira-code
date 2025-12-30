@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Save, Loader2, Building2, MapPin, DollarSign, Home, Bed, Bath, Car, Ruler } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Building2, MapPin, DollarSign, Home, Bed, Bath, Car, Ruler, Image as ImageIcon, X, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface User {
   id: string
@@ -36,7 +37,8 @@ export default function NewPropertyPage() {
     latitude: '',
     longitude: '',
     amenities: '',
-    images: '',
+    mainImage: '',
+    galleryImages: [] as string[],
     ownerId: '',
   })
 
@@ -61,6 +63,23 @@ export default function NewPropertyPage() {
     setFormData(prev => ({
       ...prev,
       [name]: value,
+    }))
+  }
+
+  const handleAddGalleryImage = () => {
+    const url = prompt('Ingresa la URL de la imagen:')
+    if (url && url.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        galleryImages: [...prev.galleryImages, url.trim()],
+      }))
+    }
+  }
+
+  const handleRemoveGalleryImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      galleryImages: prev.galleryImages.filter((_, i) => i !== index),
     }))
   }
 
@@ -93,9 +112,14 @@ export default function NewPropertyPage() {
       if (formData.amenities) {
         payload.amenities = formData.amenities.split(',').map(a => a.trim()).filter(Boolean)
       }
-      if (formData.images) {
-        payload.images = formData.images.split(',').map(i => i.trim()).filter(Boolean)
+      
+      // Combinar imagen principal y galería
+      const allImages = []
+      if (formData.mainImage) {
+        allImages.push(formData.mainImage)
       }
+      allImages.push(...formData.galleryImages)
+      payload.images = allImages.filter(Boolean)
 
       const response = await fetch('/api/admin/properties', {
         method: 'POST',
@@ -458,38 +482,113 @@ export default function NewPropertyPage() {
             </div>
           </div>
 
-          {/* Amenidades e Imágenes */}
+          {/* Amenidades */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Otros</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="amenities" className="block text-sm font-medium text-gray-700 mb-2">
-                  Amenidades (separadas por comas)
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Amenidades</h2>
+            <div>
+              <label htmlFor="amenities" className="block text-sm font-medium text-gray-700 mb-2">
+                Amenidades (separadas por comas)
+              </label>
+              <input
+                type="text"
+                id="amenities"
+                name="amenities"
+                value={formData.amenities}
+                onChange={handleChange}
+                placeholder="Ej: Jardín, Terraza, Seguridad 24/7"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder:text-gray-400 bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Imágenes */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <ImageIcon className="h-5 w-5" />
+              Imágenes de la Propiedad
+            </h2>
+            
+            {/* Imagen Principal */}
+            <div className="mb-6">
+              <label htmlFor="mainImage" className="block text-sm font-medium text-gray-700 mb-2">
+                Imagen Principal *
+              </label>
+              <input
+                type="text"
+                id="mainImage"
+                name="mainImage"
+                value={formData.mainImage}
+                onChange={handleChange}
+                placeholder="URL de la imagen principal (ej: /images/prop1.jpg o https://...)"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder:text-gray-400 bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+              {formData.mainImage && (
+                <div className="mt-3 relative w-full h-64 rounded-lg overflow-hidden border border-gray-300">
+                  <Image
+                    src={formData.mainImage}
+                    alt="Imagen principal"
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Galería de Imágenes */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Galería de Imágenes
                 </label>
-                <input
-                  type="text"
-                  id="amenities"
-                  name="amenities"
-                  value={formData.amenities}
-                  onChange={handleChange}
-                  placeholder="Ej: Jardín, Terraza, Seguridad 24/7"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder:text-gray-400 bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddGalleryImage}
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Agregar Imagen
+                </Button>
               </div>
-              <div>
-                <label htmlFor="images" className="block text-sm font-medium text-gray-700 mb-2">
-                  URLs de Imágenes (separadas por comas)
-                </label>
-                <input
-                  type="text"
-                  id="images"
-                  name="images"
-                  value={formData.images}
-                  onChange={handleChange}
-                  placeholder="Ej: /images/prop1.jpg, /images/prop2.jpg"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder:text-gray-400 bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
+              
+              {formData.galleryImages.length === 0 ? (
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                  <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-500">No hay imágenes en la galería</p>
+                  <p className="text-xs text-gray-400 mt-1">Haz clic en "Agregar Imagen" para comenzar</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {formData.galleryImages.map((imageUrl, index) => (
+                    <div key={index} className="relative group">
+                      <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-300">
+                        <Image
+                          src={imageUrl}
+                          alt={`Imagen ${index + 1}`}
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.style.display = 'none'
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveGalleryImage(index)}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <p className="mt-1 text-xs text-gray-500 truncate">{imageUrl}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
