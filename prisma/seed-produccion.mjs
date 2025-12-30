@@ -352,6 +352,253 @@ async function main() {
   console.log('  ✅ Leads de ejemplo creados')
 
   // ====================
+  // CREAR CATEGORÍAS DE SERVICIOS
+  // ====================
+  console.log('\n🔧 Creando categorías de servicios...')
+
+  const categoriaLimpieza = await prisma.serviceCategory.upsert({
+    where: { slug: 'limpieza' },
+    update: {},
+    create: {
+      name: 'Limpieza',
+      description: 'Servicios de limpieza profesional para tu hogar u oficina',
+      icon: '✨',
+      color: 'blue',
+      slug: 'limpieza',
+      isActive: true,
+    },
+  }).catch(() => null)
+  if (categoriaLimpieza) console.log('  ✅ Categoría Limpieza creada')
+
+  const categoriaInstalacion = await prisma.serviceCategory.upsert({
+    where: { slug: 'instalacion' },
+    update: {},
+    create: {
+      name: 'Instalación',
+      description: 'Instalación profesional de electrodomésticos y accesorios',
+      icon: '🔧',
+      color: 'green',
+      slug: 'instalacion',
+      isActive: true,
+    },
+  }).catch(() => null)
+  if (categoriaInstalacion) console.log('  ✅ Categoría Instalación creada')
+
+  const categoriaHandyman = await prisma.serviceCategory.upsert({
+    where: { slug: 'handyman' },
+    update: {},
+    create: {
+      name: 'Handyman',
+      description: 'Reparaciones y trabajos generales del hogar',
+      icon: '🔨',
+      color: 'orange',
+      slug: 'handyman',
+      isActive: true,
+    },
+  }).catch(() => null)
+  if (categoriaHandyman) console.log('  ✅ Categoría Handyman creada')
+
+  const categoriaExteriores = await prisma.serviceCategory.upsert({
+    where: { slug: 'exteriores' },
+    update: {},
+    create: {
+      name: 'Proyectos Exteriores',
+      description: 'Mantenimiento y mejoras de espacios exteriores',
+      icon: '🌳',
+      color: 'emerald',
+      slug: 'exteriores',
+      isActive: true,
+    },
+  }).catch(() => null)
+  if (categoriaExteriores) console.log('  ✅ Categoría Exteriores creada')
+
+  const categoriaRenovaciones = await prisma.serviceCategory.upsert({
+    where: { slug: 'renovaciones' },
+    update: {},
+    create: {
+      name: 'Renovaciones del Hogar',
+      description: 'Proyectos de renovación y remodelación completa',
+      icon: '🏠',
+      color: 'purple',
+      slug: 'renovaciones',
+      isActive: true,
+    },
+  }).catch(() => null)
+  if (categoriaRenovaciones) console.log('  ✅ Categoría Renovaciones creada')
+
+  // ====================
+  // CREAR SERVICIOS
+  // ====================
+  console.log('\n🛠️  Creando servicios de ejemplo...')
+
+  let servicioLimpiezaHogar = null
+  let servicioLimpiezaMudanza = null
+  let servicioMontajeTV = null
+  let servicioEnsamblajeMuebles = null
+
+  if (categoriaLimpieza) {
+    servicioLimpiezaHogar = await prisma.service.upsert({
+      where: { id: 'serv-limpieza-hogar' },
+      update: {},
+      create: {
+        id: 'serv-limpieza-hogar',
+        name: 'Limpieza de Hogar',
+        description: 'Limpieza regular y profunda de tu hogar',
+        categoryId: categoriaLimpieza.id,
+        basePrice: 500,
+        priceRange: 'Desde $500',
+        duration: '2-4 horas',
+        estimatedHours: 3,
+        isActive: true,
+        isPopular: true,
+      },
+    }).catch(() => null)
+
+    servicioLimpiezaMudanza = await prisma.service.upsert({
+      where: { id: 'serv-limpieza-mudanza' },
+      update: {},
+      create: {
+        id: 'serv-limpieza-mudanza',
+        name: 'Limpieza de Mudanza',
+        description: 'Limpieza completa al mudarte',
+        categoryId: categoriaLimpieza.id,
+        basePrice: 1200,
+        priceRange: 'Desde $1,200',
+        duration: '4-6 horas',
+        estimatedHours: 5,
+        isActive: true,
+      },
+    }).catch(() => null)
+  }
+
+  if (categoriaInstalacion) {
+    servicioMontajeTV = await prisma.service.upsert({
+      where: { id: 'serv-montaje-tv' },
+      update: {},
+      create: {
+        id: 'serv-montaje-tv',
+        name: 'Montaje de TV',
+        description: 'Instalación y montaje de televisores',
+        categoryId: categoriaInstalacion.id,
+        basePrice: 400,
+        priceRange: 'Desde $400',
+        duration: '1-2 horas',
+        estimatedHours: 1.5,
+        isActive: true,
+        isPopular: true,
+      },
+    }).catch(() => null)
+  }
+
+  if (categoriaHandyman) {
+    servicioEnsamblajeMuebles = await prisma.service.upsert({
+      where: { id: 'serv-ensamblaje-muebles' },
+      update: {},
+      create: {
+        id: 'serv-ensamblaje-muebles',
+        name: 'Ensamblaje de Muebles',
+        description: 'Armado profesional de muebles',
+        categoryId: categoriaHandyman.id,
+        basePrice: 350,
+        priceRange: 'Desde $350',
+        duration: '2-4 horas',
+        estimatedHours: 3,
+        isActive: true,
+        isPopular: true,
+      },
+    }).catch(() => null)
+  }
+
+  console.log('  ✅ Servicios de ejemplo creados')
+
+  // ====================
+  // CREAR PROVEEDORES DE SERVICIOS
+  // ====================
+  console.log('\n👷 Creando proveedores de servicios...')
+
+  const provider1 = await prisma.serviceProvider.upsert({
+    where: { email: 'proveedor1@test.com' },
+    update: {
+      services: {
+        set: servicioLimpiezaHogar && servicioLimpiezaMudanza 
+          ? [{ id: servicioLimpiezaHogar.id }, { id: servicioLimpiezaMudanza.id }]
+          : []
+      }
+    },
+    create: {
+      name: 'Juan Martínez',
+      email: 'proveedor1@test.com',
+      phone: '+52 55 1111 2222',
+      address: 'Ciudad de México, CDMX',
+      bio: 'Profesional con más de 8 años de experiencia en limpieza y mantenimiento del hogar. Especializado en limpieza profunda y organización.',
+      specialties: ['Limpieza de Hogar', 'Limpieza Profunda', 'Organización'],
+      experience: 8,
+      rating: 4.8,
+      totalReviews: 45,
+      isActive: true,
+      isVerified: true,
+      services: {
+        connect: servicioLimpiezaHogar && servicioLimpiezaMudanza 
+          ? [{ id: servicioLimpiezaHogar.id }, { id: servicioLimpiezaMudanza.id }]
+          : []
+      },
+    },
+  }).catch(() => null)
+  if (provider1) console.log('  ✅ Proveedor 1 creado:', provider1.email)
+
+  const provider2 = await prisma.serviceProvider.upsert({
+    where: { email: 'proveedor2@test.com' },
+    update: {
+      services: {
+        set: servicioMontajeTV ? [{ id: servicioMontajeTV.id }] : []
+      }
+    },
+    create: {
+      name: 'María Rodríguez',
+      email: 'proveedor2@test.com',
+      phone: '+52 55 3333 4444',
+      address: 'Ciudad de México, CDMX',
+      bio: 'Técnica especializada en instalaciones eléctricas y montaje de electrodomésticos. Certificada y con amplia experiencia.',
+      specialties: ['Montaje de TV', 'Instalación Eléctrica', 'Instalación de Luminarias'],
+      experience: 6,
+      rating: 4.9,
+      totalReviews: 32,
+      isActive: true,
+      isVerified: true,
+      services: {
+        connect: servicioMontajeTV ? [{ id: servicioMontajeTV.id }] : []
+      },
+    },
+  }).catch(() => null)
+  if (provider2) console.log('  ✅ Proveedor 2 creado:', provider2.email)
+
+  const provider3 = await prisma.serviceProvider.upsert({
+    where: { email: 'proveedor3@test.com' },
+    update: {
+      services: {
+        set: servicioEnsamblajeMuebles ? [{ id: servicioEnsamblajeMuebles.id }] : []
+      }
+    },
+    create: {
+      name: 'Carlos Sánchez',
+      email: 'proveedor3@test.com',
+      phone: '+52 55 5555 6666',
+      address: 'Ciudad de México, CDMX',
+      bio: 'Handyman profesional con experiencia en reparaciones generales, plomería y ensamblaje de muebles.',
+      specialties: ['Ensamblaje de Muebles', 'Reparaciones Generales', 'Plomería'],
+      experience: 10,
+      rating: 4.7,
+      totalReviews: 58,
+      isActive: true,
+      isVerified: true,
+      services: {
+        connect: servicioEnsamblajeMuebles ? [{ id: servicioEnsamblajeMuebles.id }] : []
+      },
+    },
+  }).catch(() => null)
+  if (provider3) console.log('  ✅ Proveedor 3 creado:', provider3.email)
+
+  // ====================
   // RESUMEN
   // ====================
   console.log('\n' + '='.repeat(50))
@@ -390,6 +637,9 @@ async function main() {
   console.log('   ✅ 3 Propiedades')
   console.log('   ✅ 4 Mensajes de ejemplo')
   console.log('   ✅ 5 Leads de ejemplo')
+  console.log('   ✅ 5 Categorías de servicios')
+  console.log('   ✅ Servicios de ejemplo')
+  console.log('   ✅ 3 Proveedores de servicios')
   
   console.log('\n📱 USA EN LA APP MÓVIL:')
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')

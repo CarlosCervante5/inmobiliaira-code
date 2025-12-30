@@ -334,7 +334,6 @@ model ServiceProvider {
   updatedAt   DateTime  @updatedAt
   
   // Relaciones
-  serviceIds  String[]  // IDs de servicios que puede realizar
   services    Service[] @relation("ProviderServices")
   bookings    ServiceBooking[]
 }
