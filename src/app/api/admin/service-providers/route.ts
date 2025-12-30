@@ -21,44 +21,73 @@ export async function GET() {
       }
     })
 
-    // Inicializar con servicios vacíos
-    const providersWithServices = providers.map((provider: any) => ({
-      ...provider,
-      services: []
-    }))
-
-    // Serializar correctamente los campos para JSON
-    const serializedProviders = providersWithServices.map((provider: any) => {
-      // Convertir Prisma JSON a objeto JavaScript si es necesario
-      let availability = null
-      if (provider.availability) {
-        try {
-          // Si ya es un objeto, usarlo directamente
-          availability = typeof provider.availability === 'object' 
-            ? provider.availability 
-            : JSON.parse(provider.availability)
-        } catch {
-          availability = provider.availability
+    // Serializar de forma muy simple y segura
+    const serializedProviders = providers.map((provider: any) => {
+      try {
+        // Manejar availability de forma segura
+        let availability = null
+        if (provider.availability) {
+          if (typeof provider.availability === 'object' && provider.availability !== null) {
+            availability = provider.availability
+          } else if (typeof provider.availability === 'string') {
+            try {
+              availability = JSON.parse(provider.availability)
+            } catch {
+              availability = null
+            }
+          }
         }
-      }
 
-      return {
-        id: provider.id,
-        name: provider.name,
-        email: provider.email,
-        phone: provider.phone,
-        address: provider.address || null,
-        bio: provider.bio || null,
-        specialties: Array.isArray(provider.specialties) ? provider.specialties : [],
-        experience: provider.experience,
-        rating: provider.rating,
-        totalReviews: provider.totalReviews || 0,
-        isActive: provider.isActive ?? true,
-        isVerified: provider.isVerified ?? false,
-        availability: availability,
-        createdAt: provider.createdAt ? new Date(provider.createdAt).toISOString() : new Date().toISOString(),
-        updatedAt: provider.updatedAt ? new Date(provider.updatedAt).toISOString() : new Date().toISOString(),
-        services: Array.isArray(provider.services) ? provider.services : [],
+        // Construir objeto de forma explícita
+        const result: any = {
+          id: String(provider.id || ''),
+          name: String(provider.name || ''),
+          email: String(provider.email || ''),
+          phone: String(provider.phone || ''),
+          address: provider.address ? String(provider.address) : null,
+          bio: provider.bio ? String(provider.bio) : null,
+          specialties: Array.isArray(provider.specialties) ? provider.specialties : [],
+          experience: provider.experience !== null && provider.experience !== undefined ? Number(provider.experience) : null,
+          rating: provider.rating !== null && provider.rating !== undefined ? Number(provider.rating) : null,
+          totalReviews: Number(provider.totalReviews || 0),
+          isActive: Boolean(provider.isActive !== undefined ? provider.isActive : true),
+          isVerified: Boolean(provider.isVerified !== undefined ? provider.isVerified : false),
+          availability: availability,
+          services: [], // Array vacío por ahora
+        }
+
+        // Agregar fechas de forma segura
+        if (provider.createdAt) {
+          try {
+            result.createdAt = new Date(provider.createdAt).toISOString()
+          } catch {
+            result.createdAt = new Date().toISOString()
+          }
+        } else {
+          result.createdAt = new Date().toISOString()
+        }
+
+        if (provider.updatedAt) {
+          try {
+            result.updatedAt = new Date(provider.updatedAt).toISOString()
+          } catch {
+            result.updatedAt = new Date().toISOString()
+          }
+        } else {
+          result.updatedAt = new Date().toISOString()
+        }
+
+        return result
+      } catch (serializeError: any) {
+        console.error(`Error serializando proveedor ${provider.id}:`, serializeError)
+        // Devolver objeto mínimo si falla la serialización
+        return {
+          id: String(provider.id || ''),
+          name: String(provider.name || ''),
+          email: String(provider.email || ''),
+          phone: String(provider.phone || ''),
+          error: 'Error serializando datos completos'
+        }
       }
     })
 
