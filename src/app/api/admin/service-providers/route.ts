@@ -14,52 +14,40 @@ export async function GET() {
       )
     }
 
-    // Primero intentar obtener sin relaciones para ver si la tabla existe
-    let providers
-    try {
-      providers = await prisma.serviceProvider.findMany({
-        orderBy: {
-          createdAt: 'desc'
+    // Obtener proveedores sin relaciones primero (más seguro)
+    const providers = await prisma.serviceProvider.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+
+    // Obtener servicios para cada proveedor por separado (más robusto)
+    const providersWithServices = await Promise.all(
+      providers.map(async (provider) => {
+        try {
+          const services = await prisma.service.findMany({
+            where: {
+              providers: {
+                some: {
+                  id: provider.id
+                }
+              }
+            },
+            select: {
+              id: true,
+              name: true,
+            }
+          })
+          return { ...provider, services }
+        } catch (error) {
+          console.error(`Error obteniendo servicios para proveedor ${provider.id}:`, error)
+          return { ...provider, services: [] }
         }
       })
-    } catch (dbError: any) {
-      console.error('Error en query básica:', dbError)
-      // Si falla, puede ser que la tabla no existe
-      if (dbError.code === 'P2021' || dbError.message?.includes('does not exist')) {
-        return NextResponse.json(
-          { error: 'La tabla ServiceProvider no existe. Ejecuta las migraciones primero.', details: dbError.message },
-          { status: 500 }
-        )
-      }
-      throw dbError
-    }
-
-    // Si hay proveedores, obtener sus servicios
-    if (providers.length > 0) {
-      try {
-        const providersWithServices = await prisma.serviceProvider.findMany({
-          include: {
-            services: {
-              select: {
-                id: true,
-                name: true,
-              }
-            }
-          },
-          orderBy: {
-            createdAt: 'desc'
-          }
-        })
-        providers = providersWithServices
-      } catch (relationError: any) {
-        console.error('Error obteniendo relaciones:', relationError)
-        // Si falla la relación, continuar sin servicios
-        console.log('Continuando sin relaciones de servicios')
-      }
-    }
+    )
 
     // Serializar correctamente los campos para JSON
-    const serializedProviders = providers.map((provider: any) => {
+    const serializedProviders = providersWithServices.map((provider: any) => {
       // Convertir Prisma JSON a objeto JavaScript si es necesario
       let availability = null
       if (provider.availability) {
