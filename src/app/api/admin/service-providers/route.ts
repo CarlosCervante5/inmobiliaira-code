@@ -21,80 +21,13 @@ export async function GET() {
       }
     })
 
-    // Serializar de forma muy simple y segura
-    const serializedProviders = providers.map((provider: any) => {
-      try {
-        // Construir objeto de forma explícita, omitiendo availability por ahora
-        const result: any = {
-          id: String(provider.id || ''),
-          name: String(provider.name || ''),
-          email: String(provider.email || ''),
-          phone: String(provider.phone || ''),
-          address: provider.address ? String(provider.address) : null,
-          bio: provider.bio ? String(provider.bio) : null,
-          specialties: Array.isArray(provider.specialties) ? provider.specialties : [],
-          experience: provider.experience !== null && provider.experience !== undefined ? Number(provider.experience) : null,
-          rating: provider.rating !== null && provider.rating !== undefined ? Number(provider.rating) : null,
-          totalReviews: Number(provider.totalReviews || 0),
-          isActive: Boolean(provider.isActive !== undefined ? provider.isActive : true),
-          isVerified: Boolean(provider.isVerified !== undefined ? provider.isVerified : false),
-          services: [], // Array vacío por ahora
-        }
-
-        // Manejar availability de forma muy segura (omitir si causa problemas)
-        try {
-          if (provider.availability) {
-            if (typeof provider.availability === 'object' && provider.availability !== null) {
-              result.availability = provider.availability
-            } else if (typeof provider.availability === 'string') {
-              try {
-                result.availability = JSON.parse(provider.availability)
-              } catch {
-                result.availability = null
-              }
-            } else {
-              result.availability = null
-            }
-          } else {
-            result.availability = null
-          }
-        } catch (availError) {
-          console.error(`Error procesando availability para ${provider.id}:`, availError)
-          result.availability = null
-        }
-
-        // Agregar fechas de forma segura
-        try {
-          if (provider.createdAt) {
-            result.createdAt = new Date(provider.createdAt).toISOString()
-          } else {
-            result.createdAt = new Date().toISOString()
-          }
-        } catch {
-          result.createdAt = new Date().toISOString()
-        }
-
-        try {
-          if (provider.updatedAt) {
-            result.updatedAt = new Date(provider.updatedAt).toISOString()
-          } else {
-            result.updatedAt = new Date().toISOString()
-          }
-        } catch {
-          result.updatedAt = new Date().toISOString()
-        }
-
-        return result
-      } catch (serializeError: any) {
-        console.error(`Error serializando proveedor ${provider.id}:`, serializeError)
-        // Devolver objeto mínimo si falla la serialización
-        return {
-          id: String(provider.id || ''),
-          name: String(provider.name || ''),
-          email: String(provider.email || ''),
-          phone: String(provider.phone || ''),
-          error: 'Error serializando datos completos'
-        }
+    // Forzar serialización usando JSON para evitar problemas con tipos de Prisma
+    // Esto convierte todos los tipos especiales de Prisma a tipos JSON estándar
+    const serializedProviders = JSON.parse(JSON.stringify(providers)).map((provider: any) => {
+      // Agregar servicios vacíos y asegurar que todos los campos estén presentes
+      return {
+        ...provider,
+        services: []
       }
     })
 
@@ -208,4 +141,3 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-
