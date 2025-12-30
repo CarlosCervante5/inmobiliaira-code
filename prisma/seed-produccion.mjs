@@ -716,144 +716,162 @@ async function main() {
   // CREAR PROVEEDORES DE SERVICIOS (PERSONAL)
   // ====================
   console.log('\n👷 Creando proveedores de servicios (personal)...')
+  
+  // Verificar que los servicios se crearon
+  console.log('\n📋 Verificando servicios creados...')
+  const serviciosCreados = Object.values(servicios).filter(Boolean)
+  console.log(`  ✅ ${serviciosCreados.length} servicios disponibles para conectar`)
+  
+  if (serviciosCreados.length === 0) {
+    console.log('  ⚠️  ADVERTENCIA: No hay servicios creados. Los proveedores se crearán sin servicios asociados.')
+  }
 
   // Proveedor 1 - Especialista en Limpieza
-  const provider1 = await prisma.serviceProvider.upsert({
-    where: { email: 'proveedor1@test.com' },
-    update: {
-      services: {
-        set: [
-          servicios.limpiezaHogar?.id,
-          servicios.limpiezaMudanza?.id,
-          servicios.limpiezaProfunda?.id,
-          servicios.limpiezaOficina?.id
-        ].filter(Boolean).map(id => ({ id }))
-      }
-    },
-    create: {
-      name: 'Juan Martínez',
-      email: 'proveedor1@test.com',
-      phone: '+52 55 1111 2222',
-      address: 'Ciudad de México, CDMX',
-      bio: 'Profesional con más de 8 años de experiencia en limpieza y mantenimiento del hogar. Especializado en limpieza profunda y organización. Trabajo garantizado y puntual.',
-      specialties: ['Limpieza de Hogar', 'Limpieza Profunda', 'Limpieza de Oficina', 'Organización'],
-      experience: 8,
-      rating: 4.8,
-      totalReviews: 45,
-      isActive: true,
-      isVerified: true,
-      availability: {
-        monday: { start: '08:00', end: '18:00' },
-        tuesday: { start: '08:00', end: '18:00' },
-        wednesday: { start: '08:00', end: '18:00' },
-        thursday: { start: '08:00', end: '18:00' },
-        friday: { start: '08:00', end: '18:00' },
-        saturday: { start: '09:00', end: '15:00' },
+  try {
+    const serviceIds1 = [
+      servicios.limpiezaHogar?.id,
+      servicios.limpiezaMudanza?.id,
+      servicios.limpiezaProfunda?.id,
+      servicios.limpiezaOficina?.id
+    ].filter(Boolean)
+    
+    const provider1 = await prisma.serviceProvider.upsert({
+      where: { email: 'proveedor1@test.com' },
+      update: {
+        services: {
+          set: serviceIds1.map(id => ({ id }))
+        }
       },
-      services: {
-        connect: [
-          servicios.limpiezaHogar?.id,
-          servicios.limpiezaMudanza?.id,
-          servicios.limpiezaProfunda?.id,
-          servicios.limpiezaOficina?.id
-        ].filter(Boolean).map(id => ({ id }))
+      create: {
+        name: 'Juan Martínez',
+        email: 'proveedor1@test.com',
+        phone: '+52 55 1111 2222',
+        address: 'Ciudad de México, CDMX',
+        bio: 'Profesional con más de 8 años de experiencia en limpieza y mantenimiento del hogar. Especializado en limpieza profunda y organización. Trabajo garantizado y puntual.',
+        specialties: ['Limpieza de Hogar', 'Limpieza Profunda', 'Limpieza de Oficina', 'Organización'],
+        experience: 8,
+        rating: 4.8,
+        totalReviews: 45,
+        isActive: true,
+        isVerified: true,
+        availability: {
+          monday: { start: '08:00', end: '18:00' },
+          tuesday: { start: '08:00', end: '18:00' },
+          wednesday: { start: '08:00', end: '18:00' },
+          thursday: { start: '08:00', end: '18:00' },
+          friday: { start: '08:00', end: '18:00' },
+          saturday: { start: '09:00', end: '15:00' },
+        },
+        services: {
+          connect: serviceIds1.map(id => ({ id }))
+        },
       },
-    },
-  }).catch(() => null)
-  if (provider1) console.log('  ✅ Proveedor 1 creado:', provider1.email)
+    })
+    console.log('  ✅ Proveedor 1 creado:', provider1.email)
+  } catch (error) {
+    console.error('  ❌ Error creando Proveedor 1:', error.message)
+  }
 
   // Proveedor 2 - Especialista en Instalaciones
-  const provider2 = await prisma.serviceProvider.upsert({
-    where: { email: 'proveedor2@test.com' },
-    update: {
-      services: {
-        set: [
-          servicios.montajeTV?.id,
-          servicios.instalacionLuminarias?.id,
-          servicios.instalacionVentiladores?.id,
-          servicios.instalacionCortinas?.id
-        ].filter(Boolean).map(id => ({ id }))
-      }
-    },
-    create: {
-      name: 'María Rodríguez',
-      email: 'proveedor2@test.com',
-      phone: '+52 55 3333 4444',
-      address: 'Ciudad de México, CDMX',
-      bio: 'Técnica especializada en instalaciones eléctricas y montaje de electrodomésticos. Certificada y con amplia experiencia. Trabajo limpio y profesional.',
-      specialties: ['Montaje de TV', 'Instalación Eléctrica', 'Instalación de Luminarias', 'Instalación de Ventiladores'],
-      experience: 6,
-      rating: 4.9,
-      totalReviews: 32,
-      isActive: true,
-      isVerified: true,
-      availability: {
-        monday: { start: '09:00', end: '19:00' },
-        tuesday: { start: '09:00', end: '19:00' },
-        wednesday: { start: '09:00', end: '19:00' },
-        thursday: { start: '09:00', end: '19:00' },
-        friday: { start: '09:00', end: '19:00' },
-        saturday: { start: '10:00', end: '16:00' },
+  try {
+    const serviceIds2 = [
+      servicios.montajeTV?.id,
+      servicios.instalacionLuminarias?.id,
+      servicios.instalacionVentiladores?.id,
+      servicios.instalacionCortinas?.id
+    ].filter(Boolean)
+    
+    const provider2 = await prisma.serviceProvider.upsert({
+      where: { email: 'proveedor2@test.com' },
+      update: {
+        services: {
+          set: serviceIds2.map(id => ({ id }))
+        }
       },
-      services: {
-        connect: [
-          servicios.montajeTV?.id,
-          servicios.instalacionLuminarias?.id,
-          servicios.instalacionVentiladores?.id,
-          servicios.instalacionCortinas?.id
-        ].filter(Boolean).map(id => ({ id }))
+      create: {
+        name: 'María Rodríguez',
+        email: 'proveedor2@test.com',
+        phone: '+52 55 3333 4444',
+        address: 'Ciudad de México, CDMX',
+        bio: 'Técnica especializada en instalaciones eléctricas y montaje de electrodomésticos. Certificada y con amplia experiencia. Trabajo limpio y profesional.',
+        specialties: ['Montaje de TV', 'Instalación Eléctrica', 'Instalación de Luminarias', 'Instalación de Ventiladores'],
+        experience: 6,
+        rating: 4.9,
+        totalReviews: 32,
+        isActive: true,
+        isVerified: true,
+        availability: {
+          monday: { start: '09:00', end: '19:00' },
+          tuesday: { start: '09:00', end: '19:00' },
+          wednesday: { start: '09:00', end: '19:00' },
+          thursday: { start: '09:00', end: '19:00' },
+          friday: { start: '09:00', end: '19:00' },
+          saturday: { start: '10:00', end: '16:00' },
+        },
+        services: {
+          connect: serviceIds2.map(id => ({ id }))
+        },
       },
-    },
-  }).catch(() => null)
-  if (provider2) console.log('  ✅ Proveedor 2 creado:', provider2.email)
+    })
+    console.log('  ✅ Proveedor 2 creado:', provider2.email)
+  } catch (error) {
+    console.error('  ❌ Error creando Proveedor 2:', error.message)
+  }
 
   // Proveedor 3 - Handyman General
-  const provider3 = await prisma.serviceProvider.upsert({
-    where: { email: 'proveedor3@test.com' },
-    update: {
-      services: {
-        set: [
-          servicios.ensamblajeMuebles?.id,
-          servicios.reparacionPlomeria?.id,
-          servicios.reparacionElectricidad?.id,
-          servicios.reparacionPintura?.id
-        ].filter(Boolean).map(id => ({ id }))
-      }
-    },
-    create: {
-      name: 'Carlos Sánchez',
-      email: 'proveedor3@test.com',
-      phone: '+52 55 5555 6666',
-      address: 'Ciudad de México, CDMX',
-      bio: 'Handyman profesional con experiencia en reparaciones generales, plomería y ensamblaje de muebles. Soluciono cualquier problema del hogar.',
-      specialties: ['Ensamblaje de Muebles', 'Reparaciones Generales', 'Plomería', 'Reparación Eléctrica'],
-      experience: 10,
-      rating: 4.7,
-      totalReviews: 58,
-      isActive: true,
-      isVerified: true,
-      availability: {
-        monday: { start: '08:00', end: '20:00' },
-        tuesday: { start: '08:00', end: '20:00' },
-        wednesday: { start: '08:00', end: '20:00' },
-        thursday: { start: '08:00', end: '20:00' },
-        friday: { start: '08:00', end: '20:00' },
-        saturday: { start: '09:00', end: '17:00' },
+  try {
+    const serviceIds3 = [
+      servicios.ensamblajeMuebles?.id,
+      servicios.reparacionPlomeria?.id,
+      servicios.reparacionElectricidad?.id,
+      servicios.reparacionPintura?.id
+    ].filter(Boolean)
+    
+    const provider3 = await prisma.serviceProvider.upsert({
+      where: { email: 'proveedor3@test.com' },
+      update: {
+        services: {
+          set: serviceIds3.map(id => ({ id }))
+        }
       },
-      services: {
-        connect: [
-          servicios.ensamblajeMuebles?.id,
-          servicios.reparacionPlomeria?.id,
-          servicios.reparacionElectricidad?.id,
-          servicios.reparacionPintura?.id
-        ].filter(Boolean).map(id => ({ id }))
+      create: {
+        name: 'Carlos Sánchez',
+        email: 'proveedor3@test.com',
+        phone: '+52 55 5555 6666',
+        address: 'Ciudad de México, CDMX',
+        bio: 'Handyman profesional con experiencia en reparaciones generales, plomería y ensamblaje de muebles. Soluciono cualquier problema del hogar.',
+        specialties: ['Ensamblaje de Muebles', 'Reparaciones Generales', 'Plomería', 'Reparación Eléctrica'],
+        experience: 10,
+        rating: 4.7,
+        totalReviews: 58,
+        isActive: true,
+        isVerified: true,
+        availability: {
+          monday: { start: '08:00', end: '20:00' },
+          tuesday: { start: '08:00', end: '20:00' },
+          wednesday: { start: '08:00', end: '20:00' },
+          thursday: { start: '08:00', end: '20:00' },
+          friday: { start: '08:00', end: '20:00' },
+          saturday: { start: '09:00', end: '17:00' },
+        },
+        services: {
+          connect: serviceIds3.map(id => ({ id }))
+        },
       },
-    },
-  }).catch(() => null)
-  if (provider3) console.log('  ✅ Proveedor 3 creado:', provider3.email)
+    })
+    console.log('  ✅ Proveedor 3 creado:', provider3.email)
+  } catch (error) {
+    console.error('  ❌ Error creando Proveedor 3:', error.message)
+  }
 
   // Proveedor 4 - Especialista en Exteriores
-  const provider4 = await prisma.serviceProvider.upsert({
+  try {
+    const serviceIds4 = [
+      servicios.mantenimientoJardin?.id,
+      servicios.limpiezaTerraza?.id
+    ].filter(Boolean)
+    
+    const provider4 = await prisma.serviceProvider.upsert({
     where: { email: 'proveedor4@test.com' },
     update: {
       services: {
@@ -884,17 +902,23 @@ async function main() {
         saturday: { start: '08:00', end: '14:00' },
       },
       services: {
-        connect: [
-          servicios.mantenimientoJardin?.id,
-          servicios.limpiezaTerraza?.id
-        ].filter(Boolean).map(id => ({ id }))
+        connect: serviceIds4.map(id => ({ id }))
       },
     },
-  }).catch(() => null)
-  if (provider4) console.log('  ✅ Proveedor 4 creado:', provider4.email)
+  })
+  console.log('  ✅ Proveedor 4 creado:', provider4.email)
+  } catch (error) {
+    console.error('  ❌ Error creando Proveedor 4:', error.message)
+  }
 
   // Proveedor 5 - Especialista en Renovaciones
-  const provider5 = await prisma.serviceProvider.upsert({
+  try {
+    const serviceIds5 = [
+      servicios.renovacionCocina?.id,
+      servicios.renovacionBano?.id
+    ].filter(Boolean)
+    
+    const provider5 = await prisma.serviceProvider.upsert({
     where: { email: 'proveedor5@test.com' },
     update: {
       services: {
@@ -925,17 +949,24 @@ async function main() {
         saturday: { start: '10:00', end: '15:00' },
       },
       services: {
-        connect: [
-          servicios.renovacionCocina?.id,
-          servicios.renovacionBano?.id
-        ].filter(Boolean).map(id => ({ id }))
+        connect: serviceIds5.map(id => ({ id }))
       },
     },
-  }).catch(() => null)
-  if (provider5) console.log('  ✅ Proveedor 5 creado:', provider5.email)
+  })
+  console.log('  ✅ Proveedor 5 creado:', provider5.email)
+  } catch (error) {
+    console.error('  ❌ Error creando Proveedor 5:', error.message)
+  }
 
   // Proveedor 6 - Limpieza y Organización
-  const provider6 = await prisma.serviceProvider.upsert({
+  try {
+    const serviceIds6 = [
+      servicios.limpiezaHogar?.id,
+      servicios.limpiezaProfunda?.id,
+      servicios.limpiezaOficina?.id
+    ].filter(Boolean)
+    
+    const provider6 = await prisma.serviceProvider.upsert({
     where: { email: 'proveedor6@test.com' },
     update: {
       services: {
@@ -967,18 +998,25 @@ async function main() {
         saturday: { start: '09:00', end: '14:00' },
       },
       services: {
-        connect: [
-          servicios.limpiezaHogar?.id,
-          servicios.limpiezaProfunda?.id,
-          servicios.limpiezaOficina?.id
-        ].filter(Boolean).map(id => ({ id }))
+        connect: serviceIds6.map(id => ({ id }))
       },
     },
-  }).catch(() => null)
-  if (provider6) console.log('  ✅ Proveedor 6 creado:', provider6.email)
+  })
+  console.log('  ✅ Proveedor 6 creado:', provider6.email)
+  } catch (error) {
+    console.error('  ❌ Error creando Proveedor 6:', error.message)
+  }
 
   // Proveedor 7 - Instalaciones y Reparaciones
-  const provider7 = await prisma.serviceProvider.upsert({
+  try {
+    const serviceIds7 = [
+      servicios.montajeTV?.id,
+      servicios.instalacionLuminarias?.id,
+      servicios.reparacionPlomeria?.id,
+      servicios.reparacionElectricidad?.id
+    ].filter(Boolean)
+    
+    const provider7 = await prisma.serviceProvider.upsert({
     where: { email: 'proveedor7@test.com' },
     update: {
       services: {
@@ -1011,16 +1049,14 @@ async function main() {
         saturday: { start: '09:00', end: '16:00' },
       },
       services: {
-        connect: [
-          servicios.montajeTV?.id,
-          servicios.instalacionLuminarias?.id,
-          servicios.reparacionPlomeria?.id,
-          servicios.reparacionElectricidad?.id
-        ].filter(Boolean).map(id => ({ id }))
+        connect: serviceIds7.map(id => ({ id }))
       },
     },
-  }).catch(() => null)
-  if (provider7) console.log('  ✅ Proveedor 7 creado:', provider7.email)
+  })
+  console.log('  ✅ Proveedor 7 creado:', provider7.email)
+  } catch (error) {
+    console.error('  ❌ Error creando Proveedor 7:', error.message)
+  }
 
   // ====================
   // RESUMEN
