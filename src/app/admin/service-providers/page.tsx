@@ -32,15 +32,42 @@ export default function AdminServiceProvidersPage() {
   }, [])
 
   const fetchProviders = async () => {
+    console.log('[Client] Iniciando fetch de service-providers...')
     try {
+      console.log('[Client] Haciendo fetch a /api/admin/service-providers')
       const response = await fetch('/api/admin/service-providers')
+      
+      console.log('[Client] Respuesta recibida:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      })
+      
       if (response.ok) {
+        console.log('[Client] Respuesta OK, parseando JSON...')
         const data = await response.json()
+        console.log('[Client] Datos recibidos:', {
+          cantidad: Array.isArray(data) ? data.length : 'no es array',
+          tipo: typeof data,
+          muestra: Array.isArray(data) && data.length > 0 ? data[0] : 'sin datos'
+        })
         setProviders(data)
+        console.log('[Client] ✅ Proveedores actualizados en estado')
+      } else {
+        console.error('[Client] ❌ Respuesta no OK:', response.status, response.statusText)
+        const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }))
+        console.error('[Client] Error data:', errorData)
+        alert(`Error al cargar proveedores: ${errorData.error || response.statusText} (${response.status})`)
       }
-    } catch (error) {
-      console.error('Error fetching providers:', error)
+    } catch (error: any) {
+      console.error('[Client] ❌ Error en fetch:', error)
+      console.error('[Client] Error name:', error?.name)
+      console.error('[Client] Error message:', error?.message)
+      console.error('[Client] Error stack:', error?.stack)
+      alert(`Error al cargar proveedores: ${error?.message || 'Error desconocido'}`)
     } finally {
+      console.log('[Client] Finalizando fetch, estableciendo loading=false')
       setLoading(false)
     }
   }
