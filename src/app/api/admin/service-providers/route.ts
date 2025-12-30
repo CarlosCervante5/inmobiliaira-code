@@ -29,7 +29,7 @@ export async function GET() {
     })
 
     // Serializar correctamente el campo availability (JSON)
-    const serializedProviders = providers.map(provider => ({
+    const serializedProviders = providers.map((provider: any) => ({
       ...provider,
       availability: provider.availability || null,
     }))
