@@ -4,16 +4,23 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
 export async function GET() {
+  console.log('[GET /api/admin/service-providers] Iniciando request')
+  
   try {
+    console.log('[GET /api/admin/service-providers] Verificando sesión...')
     const session = await getServerSession(authOptions)
+    console.log('[GET /api/admin/service-providers] Sesión:', session ? { userId: session.user?.id, role: session.user?.role } : 'null')
     
     if (!session || session.user?.role !== 'ADMIN') {
+      console.log('[GET /api/admin/service-providers] ❌ No autorizado - sesión:', !!session, 'role:', session?.user?.role)
       return NextResponse.json(
         { error: 'No autorizado' },
         { status: 401 }
       )
     }
 
+    console.log('[GET /api/admin/service-providers] ✅ Sesión válida, consultando base de datos...')
+    
     // Obtener proveedores sin relaciones (más simple y robusto)
     const providers = await prisma.serviceProvider.findMany({
       orderBy: {
@@ -21,26 +28,64 @@ export async function GET() {
       }
     })
 
+    console.log('[GET /api/admin/service-providers] ✅ Proveedores obtenidos:', providers.length)
+    console.log('[GET /api/admin/service-providers] Primer proveedor (muestra):', providers[0] ? {
+      id: providers[0].id,
+      name: providers[0].name,
+      email: providers[0].email,
+      hasAvailability: !!providers[0].availability,
+      availabilityType: typeof providers[0].availability,
+      createdAt: providers[0].createdAt,
+      updatedAt: providers[0].updatedAt
+    } : 'No hay proveedores')
+
+    console.log('[GET /api/admin/service-providers] Iniciando serialización JSON...')
+    
     // Forzar serialización usando JSON para evitar problemas con tipos de Prisma
     // Esto convierte todos los tipos especiales de Prisma a tipos JSON estándar
-    const serializedProviders = JSON.parse(JSON.stringify(providers)).map((provider: any) => {
-      // Agregar servicios vacíos y asegurar que todos los campos estén presentes
-      return {
-        ...provider,
-        services: []
-      }
-    })
+    let serializedProviders
+    try {
+      const jsonString = JSON.stringify(providers)
+      console.log('[GET /api/admin/service-providers] ✅ JSON.stringify exitoso, longitud:', jsonString.length)
+      
+      serializedProviders = JSON.parse(jsonString).map((provider: any) => {
+        // Agregar servicios vacíos y asegurar que todos los campos estén presentes
+        return {
+          ...provider,
+          services: []
+        }
+      })
+      console.log('[GET /api/admin/service-providers] ✅ JSON.parse exitoso, proveedores serializados:', serializedProviders.length)
+    } catch (serializeError: any) {
+      console.error('[GET /api/admin/service-providers] ❌ Error en serialización JSON:', serializeError)
+      console.error('[GET /api/admin/service-providers] Error message:', serializeError.message)
+      console.error('[GET /api/admin/service-providers] Error stack:', serializeError.stack)
+      throw serializeError
+    }
 
-    return NextResponse.json(serializedProviders)
+    console.log('[GET /api/admin/service-providers] Preparando respuesta...')
+    const response = NextResponse.json(serializedProviders)
+    console.log('[GET /api/admin/service-providers] ✅ Respuesta preparada exitosamente')
+    
+    return response
   } catch (error: any) {
-    console.error('Error fetching service providers:', error)
-    console.error('Error stack:', error.stack)
-    console.error('Error code:', error.code)
+    console.error('[GET /api/admin/service-providers] ❌ ERROR GENERAL:', error)
+    console.error('[GET /api/admin/service-providers] Error name:', error?.name)
+    console.error('[GET /api/admin/service-providers] Error message:', error?.message)
+    console.error('[GET /api/admin/service-providers] Error code:', error?.code)
+    console.error('[GET /api/admin/service-providers] Error stack:', error?.stack)
+    
+    // Log adicional para errores de Prisma
+    if (error?.code) {
+      console.error('[GET /api/admin/service-providers] Prisma error code:', error.code)
+    }
+    
     return NextResponse.json(
       { 
         error: 'Error al obtener profesionales', 
         details: error.message,
         code: error.code,
+        name: error.name,
         stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       },
       { status: 500 }
