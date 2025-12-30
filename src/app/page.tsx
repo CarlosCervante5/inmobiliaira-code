@@ -125,18 +125,26 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section estilo Homes.com */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 py-16 sm:py-20 lg:py-24">
-        {/* Imagen de fondo opcional - puedes agregar una imagen real después */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-700/90 to-blue-800/90">
-          <div className="absolute inset-0 bg-[url('/images/hero-house.jpg')] bg-cover bg-center opacity-20"></div>
+      <section className="relative py-16 sm:py-20 lg:py-24 overflow-hidden">
+        {/* Imagen de fondo */}
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1973&q=80"
+            alt="Casa moderna"
+            fill
+            className="object-cover"
+            priority
+          />
+          {/* Overlay oscuro para mejor legibilidad */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/75 to-blue-900/80"></div>
         </div>
         
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white mb-8 sm:mb-12">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              El Lugar para Encontrar un Lugar
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+              El lugar para encontrar un lugar
             </h1>
-            <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-lg sm:text-xl leading-7 sm:leading-8 text-blue-100 px-2">
+            <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg leading-7 sm:leading-8 text-blue-100 px-2">
               Encuentra tu hogar ideal entre miles de propiedades disponibles
             </p>
           </div>
