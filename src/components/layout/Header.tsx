@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
-import { Menu, X, Search, User, LogOut, Home, Building2, Wrench } from 'lucide-react'
+import { Menu, X, User, LogOut, Home, Building2, Wrench, Calculator } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 export function Header() {
@@ -14,6 +14,7 @@ export function Header() {
     { name: 'Inicio', href: '/', icon: Home },
     { name: 'Propiedades', href: '/properties', icon: Building2 },
     { name: 'Servicios', href: '/services', icon: Wrench },
+    { name: 'Simulador INFONAVIT', href: '/simulador-infonavit', icon: Calculator },
   ]
 
   const userNavigation = [
@@ -54,19 +55,6 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Búsqueda */}
-          <div className="hidden md:flex md:flex-1 md:justify-center md:px-8">
-            <div className="w-full max-w-lg">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Buscar propiedades..."
-                  className="w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-          </div>
 
           {/* Usuario */}
           <div className="flex items-center space-x-2 sm:space-x-4">
@@ -145,17 +133,6 @@ export function Header() {
                 </Link>
               ))}
               
-              {/* Búsqueda móvil */}
-              <div className="px-3 py-2">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Buscar propiedades..."
-                    className="w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
 
               {session ? (
                 <div className="border-t border-gray-200 pt-3 mt-2">

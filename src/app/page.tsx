@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import { Search, Home, Building2, CreditCard, Users, Shield, CheckCircle, Bed, Bath, Maximize, Wrench, Sparkles, Hammer } from 'lucide-react'
+import { Search, Home, Building2, CreditCard, Users, Shield, CheckCircle, Bed, Bath, Maximize, Wrench, Sparkles, Hammer, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { InfonavitCalculator } from '@/components/credit/InfonavitCalculator'
 import Image from 'next/image'
 
 // Propiedades destacadas para mostrar en el home
@@ -101,8 +100,8 @@ export default function HomePage() {
     },
     {
       icon: CreditCard,
-      title: 'Consulta de Crédito',
-      description: 'Verifica tu elegibilidad para crédito INFONAVIT directamente en la plataforma.'
+      title: 'Simulador INFONAVIT',
+      description: 'Calcula tu capacidad de crédito INFONAVIT y descubre cuánto puedes obtener para tu vivienda.'
     },
     {
       icon: Users,
@@ -125,21 +124,53 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section con Calculadora INFONAVIT */}
-      <section className="relative bg-gradient-to-br from-blue-600 to-blue-800 py-12 sm:py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Hero Section estilo Homes.com */}
+      <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 py-16 sm:py-20 lg:py-24">
+        {/* Imagen de fondo opcional - puedes agregar una imagen real después */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-700/90 to-blue-800/90">
+          <div className="absolute inset-0 bg-[url('/images/hero-house.jpg')] bg-cover bg-center opacity-20"></div>
+        </div>
+        
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white mb-8 sm:mb-12">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-              Calcula tu crédito INFONAVIT
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              El Lugar para Encontrar un Lugar
             </h1>
-            <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg leading-7 sm:leading-8 text-blue-100 px-2">
-              Descubre cuánto puedes obtener para tu vivienda y encuentra tu hogar ideal
+            <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-lg sm:text-xl leading-7 sm:leading-8 text-blue-100 px-2">
+              Encuentra tu hogar ideal entre miles de propiedades disponibles
             </p>
           </div>
           
-          {/* Calculadora integrada en el hero */}
-          <div className="mt-8">
-            <InfonavitCalculator />
+          {/* Buscador grande en el hero */}
+          <div className="mt-8 max-w-4xl mx-auto">
+            <div className="bg-white rounded-lg shadow-2xl p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
+                {/* Dropdown de tipo */}
+                <div className="sm:w-32">
+                  <select className="w-full rounded-md border border-gray-300 bg-white px-3 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>En Venta</option>
+                    <option>En Renta</option>
+                    <option>Todos</option>
+                  </select>
+                </div>
+                
+                {/* Input de búsqueda principal */}
+                <div className="flex-1 relative">
+                  <MapPin className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Busca por ciudad, colonia, dirección..."
+                    className="w-full rounded-md border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                
+                {/* Botón de búsqueda */}
+                <Button className="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white">
+                  <Search className="h-5 w-5 mr-2" />
+                  Buscar
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -225,61 +256,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Search Bar */}
-      <section className="bg-white py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8">
-          <div className="text-center px-2 mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Busca tu propiedad ideal</h2>
-            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
-              Utiliza nuestros filtros para encontrar exactamente lo que necesitas
-            </p>
-          </div>
-          <div className="rounded-lg bg-gray-50 p-4 sm:p-6 shadow-lg">
-            <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                  Ubicación
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ciudad, colonia..."
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                  Tipo de Propiedad
-                </label>
-                <select className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  <option>Todos los tipos</option>
-                  <option>Casa</option>
-                  <option>Departamento</option>
-                  <option>Terreno</option>
-                  <option>Comercial</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                  Rango de Precio
-                </label>
-                <select className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  <option>Cualquier precio</option>
-                  <option>Hasta $500,000</option>
-                  <option>$500,000 - $1,000,000</option>
-                  <option>$1,000,000 - $2,000,000</option>
-                  <option>Más de $2,000,000</option>
-                </select>
-              </div>
-              <div className="flex items-end">
-                <Button className="w-full text-sm sm:text-base">
-                  <Search className="mr-2 h-4 w-4" />
-                  Buscar
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Property Types */}
       <section className="bg-gray-50 py-12 sm:py-16">
