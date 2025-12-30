@@ -21,8 +21,26 @@ export async function GET() {
 
     console.log('[GET /api/admin/service-providers] ✅ Sesión válida, consultando base de datos...')
     
-    // Obtener proveedores sin relaciones (más simple y robusto)
+    // Obtener proveedores especificando campos explícitamente para evitar problemas con relaciones
     const providers = await prisma.serviceProvider.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        address: true,
+        bio: true,
+        specialties: true,
+        experience: true,
+        rating: true,
+        totalReviews: true,
+        isActive: true,
+        isVerified: true,
+        availability: true,
+        createdAt: true,
+        updatedAt: true,
+        // NO incluir relaciones para evitar errores
+      },
       orderBy: {
         createdAt: 'desc'
       }
