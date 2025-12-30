@@ -1,116 +1,47 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { 
-  Sparkles, 
-  Wrench, 
-  Home, 
-  Building2, 
-  TreePine, 
-  Hammer,
-  Droplet,
-  Zap,
-  Paintbrush,
-  Sofa,
-  Tv,
-  Lightbulb,
-  Fan,
-  Car,
-  Scissors,
-  Trash2,
-  Brush,
-  DoorOpen,
-  Square,
   ArrowRight,
   CheckCircle,
-  Star
+  Star,
+  Sparkles,
+  Sofa,
+  Tv,
+  Paintbrush
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import Image from 'next/image'
+import { getIconFromString, getColorClass } from '@/lib/service-icons'
 
-// Categorías de servicios
-const serviceCategories = [
-  {
-    id: 'limpieza',
-    name: 'Limpieza',
-    icon: Sparkles,
-    description: 'Servicios de limpieza profesional para tu hogar u oficina',
-    color: 'bg-blue-500',
-    services: [
-      { name: 'Limpieza de Hogar', description: 'Limpieza regular y profunda de tu hogar' },
-      { name: 'Limpieza de Mudanza', description: 'Limpieza completa al mudarte' },
-      { name: 'Limpieza de Oficina', description: 'Mantenimiento de espacios comerciales' },
-      { name: 'Limpieza Profunda', description: 'Limpieza exhaustiva de toda la casa' },
-    ]
-  },
-  {
-    id: 'instalacion',
-    name: 'Instalación',
-    icon: Wrench,
-    description: 'Instalación profesional de electrodomésticos y accesorios',
-    color: 'bg-green-500',
-    services: [
-      { name: 'Montaje de TV', description: 'Instalación y montaje de televisores' },
-      { name: 'Colgar Cuadros y Estantes', description: 'Instalación de decoración y estantería' },
-      { name: 'Instalación de Luminarias', description: 'Colocación de lámparas y luces' },
-      { name: 'Instalación de Ventiladores', description: 'Montaje de ventiladores de techo' },
-    ]
-  },
-  {
-    id: 'handyman',
-    name: 'Handyman',
-    icon: Hammer,
-    description: 'Reparaciones y trabajos generales del hogar',
-    color: 'bg-orange-500',
-    services: [
-      { name: 'Ensamblaje de Muebles', description: 'Armado profesional de muebles' },
-      { name: 'Reparaciones Generales', description: 'Arreglos diversos del hogar' },
-      { name: 'Plomería General', description: 'Reparaciones de tuberías y grifería' },
-      { name: 'Reparación de Grifos', description: 'Arreglo y cambio de llaves de agua' },
-      { name: 'Reparación de Inodoros', description: 'Mantenimiento de sanitarios' },
-      { name: 'Electricidad General', description: 'Reparaciones eléctricas básicas' },
-      { name: 'Instalación de Contactos', description: 'Colocación de enchufes y apagadores' },
-      { name: 'Ayuda con Mudanzas', description: 'Asistencia en el proceso de mudanza' },
-    ]
-  },
-  {
-    id: 'exteriores',
-    name: 'Proyectos Exteriores',
-    icon: TreePine,
-    description: 'Mantenimiento y mejoras de espacios exteriores',
-    color: 'bg-emerald-500',
-    services: [
-      { name: 'Cuidado de Jardín', description: 'Mantenimiento de césped y jardín' },
-      { name: 'Limpieza de Canaletas', description: 'Limpieza de bajantes y desagües' },
-      { name: 'Remoción de Árboles', description: 'Tala y remoción de árboles' },
-      { name: 'Poda de Árboles', description: 'Recorte y mantenimiento de árboles' },
-      { name: 'Instalación de Cercas', description: 'Colocación de cercas de madera' },
-      { name: 'Reparación de Terrazas', description: 'Mantenimiento de porches y terrazas' },
-      { name: 'Instalación de Terrazas', description: 'Construcción de decks y porches' },
-      { name: 'Pintura Exterior', description: 'Pintura de fachadas y exteriores' },
-      { name: 'Superficies Exteriores', description: 'Mantenimiento de superficies externas' },
-    ]
-  },
-  {
-    id: 'renovaciones',
-    name: 'Renovaciones del Hogar',
-    icon: Home,
-    description: 'Proyectos de renovación y remodelación completa',
-    color: 'bg-purple-500',
-    services: [
-      { name: 'Remodelación de Baño', description: 'Renovación completa de baños' },
-      { name: 'Remodelación de Cocina', description: 'Renovación integral de cocinas' },
-      { name: 'Remodelación de Sótano', description: 'Acondicionamiento de sótanos' },
-      { name: 'Renovaciones Mayores', description: 'Proyectos de renovación extensos' },
-      { name: 'Acabado de Pisos de Madera', description: 'Restauración de pisos de madera' },
-      { name: 'Instalación de Techos', description: 'Colocación de techos nuevos' },
-      { name: 'Reparación de Techos', description: 'Mantenimiento y reparación de techos' },
-      { name: 'Instalación de Ventanas', description: 'Colocación de ventanas nuevas' },
-      { name: 'Pintura Interior', description: 'Pintura de interiores' },
-      { name: 'Tratamiento de Ventanas', description: 'Instalación de cortinas y persianas' },
-    ]
-  },
-]
+interface ServiceCategory {
+  id: string
+  name: string
+  description: string | null
+  icon: string | null
+  color: string | null
+  slug: string
+  _count: {
+    services: number
+  }
+}
+
+interface Service {
+  id: string
+  name: string
+  description: string
+  basePrice: number | null
+  priceRange: string | null
+  duration: string | null
+  isPopular: boolean
+  category: {
+    id: string
+    name: string
+    slug: string
+    icon: string | null
+    color: string | null
+  }
+}
 
 const benefits = [
   {
@@ -129,13 +60,69 @@ const benefits = [
     description: 'Precios claros y sin sorpresas antes de contratar'
   },
   {
-    icon: Home,
+    icon: Star,
     title: 'Disponibilidad 24/7',
     description: 'Atención al cliente disponible las 24 horas del día, 7 días a la semana'
   },
 ]
 
 export default function ServicesPage() {
+  const [categories, setCategories] = useState<ServiceCategory[]>([])
+  const [popularServices, setPopularServices] = useState<Service[]>([])
+  const [categoryServices, setCategoryServices] = useState<Record<string, Service[]>>({})
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const fetchData = async () => {
+    try {
+      // Obtener categorías
+      const categoriesRes = await fetch('/api/services/categories')
+      if (categoriesRes.ok) {
+        const cats = await categoriesRes.json()
+        setCategories(cats)
+
+        // Obtener servicios para cada categoría
+        const servicesPromises = cats.map(async (cat: ServiceCategory) => {
+          const servicesRes = await fetch(`/api/services?categoryId=${cat.id}`)
+          if (servicesRes.ok) {
+            const services = await servicesRes.json()
+            return { categoryId: cat.id, services }
+          }
+          return { categoryId: cat.id, services: [] }
+        })
+
+        const servicesResults = await Promise.all(servicesPromises)
+        const servicesMap: Record<string, Service[]> = {}
+        servicesResults.forEach(({ categoryId, services }) => {
+          servicesMap[categoryId] = services
+        })
+        setCategoryServices(servicesMap)
+      }
+
+      // Obtener servicios populares
+      const popularRes = await fetch('/api/services?popular=true')
+      if (popularRes.ok) {
+        const popular = await popularRes.json()
+        setPopularServices(popular.slice(0, 4)) // Solo los primeros 4
+      }
+    } catch (error) {
+      console.error('Error fetching services data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -170,89 +157,117 @@ export default function ServicesPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {serviceCategories.map((category) => (
-              <div
-                key={category.id}
-                className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-xl"
-              >
-                <div className={`${category.color} p-6`}>
-                  <category.icon className="h-12 w-12 text-white" />
-                  <h3 className="mt-4 text-xl font-bold text-white">{category.name}</h3>
-                  <p className="mt-2 text-sm text-white/90">{category.description}</p>
-                </div>
-                
-                <div className="p-6">
-                  <ul className="space-y-3">
-                    {category.services.slice(0, 4).map((service, index) => (
-                      <li key={index} className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{service.name}</p>
-                          <p className="text-xs text-gray-500">{service.description}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                  {category.services.length > 4 && (
-                    <p className="mt-4 text-sm text-gray-500">
-                      +{category.services.length - 4} servicios más
-                    </p>
-                  )}
-                  <Link href={`/services/${category.id}`}>
-                    <Button 
-                      variant="outline" 
-                      className="mt-6 w-full group-hover:bg-blue-50"
-                    >
-                      Ver Servicios
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
+          {categories.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No hay categorías disponibles</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {categories.map((category) => {
+                const IconComponent = getIconFromString(category.icon)
+                const colorClass = getColorClass(category.color)
+                const services = categoryServices[category.id] || []
+                const displayServices = services.slice(0, 4)
+
+                return (
+                  <div
+                    key={category.id}
+                    className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-xl"
+                  >
+                    <div className={`${colorClass} p-6`}>
+                      <IconComponent className="h-12 w-12 text-white" />
+                      <h3 className="mt-4 text-xl font-bold text-white">{category.name}</h3>
+                      <p className="mt-2 text-sm text-white/90">
+                        {category.description || 'Servicios profesionales de calidad'}
+                      </p>
+                    </div>
+                    
+                    <div className="p-6">
+                      {displayServices.length > 0 ? (
+                        <>
+                          <ul className="space-y-3">
+                            {displayServices.map((service) => (
+                              <li key={service.id} className="flex items-start">
+                                <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">{service.name}</p>
+                                  <p className="text-xs text-gray-500 line-clamp-1">{service.description}</p>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                          {services.length > 4 && (
+                            <p className="mt-4 text-sm text-gray-500">
+                              +{services.length - 4} servicios más
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-sm text-gray-500">No hay servicios disponibles</p>
+                      )}
+                      <Link href={`/services/${category.slug}`}>
+                        <Button 
+                          variant="outline" 
+                          className="mt-6 w-full group-hover:bg-blue-50"
+                        >
+                          Ver Servicios
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       </section>
 
       {/* Servicios Populares */}
-      <section className="bg-white py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Servicios Más Populares</h2>
-            <p className="mt-4 text-base sm:text-lg text-gray-600">
-              Reserva instantáneamente servicios altamente calificados a precios transparentes
-            </p>
-          </div>
+      {popularServices.length > 0 && (
+        <section className="bg-white py-12 sm:py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Servicios Más Populares</h2>
+              <p className="mt-4 text-base sm:text-lg text-gray-600">
+                Reserva instantáneamente servicios altamente calificados a precios transparentes
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { name: 'Limpieza de Hogar', icon: Sparkles, color: 'bg-blue-100 text-blue-600' },
-              { name: 'Ensamblaje de Muebles', icon: Sofa, color: 'bg-orange-100 text-orange-600' },
-              { name: 'Montaje de TV', icon: Tv, color: 'bg-purple-100 text-purple-600' },
-              { name: 'Colgar Cuadros', icon: Paintbrush, color: 'bg-green-100 text-green-600' },
-            ].map((service, index) => (
-              <div
-                key={index}
-                className="group relative overflow-hidden rounded-lg bg-white border-2 border-gray-200 p-6 transition-all hover:border-blue-500 hover:shadow-lg"
-              >
-                <div className={`${service.color} w-12 h-12 rounded-lg flex items-center justify-center mb-4`}>
-                  <service.icon className="h-6 w-6" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
-                  {service.name}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600">
-                  Reserva ahora con profesionales verificados
-                </p>
-                <Button variant="outline" size="sm" className="mt-4 w-full">
-                  Reservar
-                </Button>
-              </div>
-            ))}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {popularServices.map((service) => {
+                const ServiceIcon = getIconFromString(service.category.icon)
+                const iconColorClass = getColorClass(service.category.color)
+
+                return (
+                  <div
+                    key={service.id}
+                    className="group relative overflow-hidden rounded-lg bg-white border-2 border-gray-200 p-6 transition-all hover:border-blue-500 hover:shadow-lg"
+                  >
+                    <div className={`${iconColorClass} w-12 h-12 rounded-lg flex items-center justify-center mb-4`}>
+                      <ServiceIcon className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
+                      {service.name}
+                    </h3>
+                    <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+                      {service.description}
+                    </p>
+                    {service.priceRange && (
+                      <p className="mt-2 text-sm font-medium text-gray-900">
+                        {service.priceRange}
+                      </p>
+                    )}
+                    <Button variant="outline" size="sm" className="mt-4 w-full">
+                      Reservar
+                    </Button>
+                  </div>
+                )
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Beneficios */}
       <section className="bg-gray-50 py-12 sm:py-16">
@@ -303,4 +318,3 @@ export default function ServicesPage() {
     </div>
   )
 }
-
