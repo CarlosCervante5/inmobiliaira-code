@@ -24,21 +24,7 @@ export async function GET() {
     // Serializar de forma muy simple y segura
     const serializedProviders = providers.map((provider: any) => {
       try {
-        // Manejar availability de forma segura
-        let availability = null
-        if (provider.availability) {
-          if (typeof provider.availability === 'object' && provider.availability !== null) {
-            availability = provider.availability
-          } else if (typeof provider.availability === 'string') {
-            try {
-              availability = JSON.parse(provider.availability)
-            } catch {
-              availability = null
-            }
-          }
-        }
-
-        // Construir objeto de forma explícita
+        // Construir objeto de forma explícita, omitiendo availability por ahora
         const result: any = {
           id: String(provider.id || ''),
           name: String(provider.name || ''),
@@ -52,28 +38,49 @@ export async function GET() {
           totalReviews: Number(provider.totalReviews || 0),
           isActive: Boolean(provider.isActive !== undefined ? provider.isActive : true),
           isVerified: Boolean(provider.isVerified !== undefined ? provider.isVerified : false),
-          availability: availability,
           services: [], // Array vacío por ahora
         }
 
+        // Manejar availability de forma muy segura (omitir si causa problemas)
+        try {
+          if (provider.availability) {
+            if (typeof provider.availability === 'object' && provider.availability !== null) {
+              result.availability = provider.availability
+            } else if (typeof provider.availability === 'string') {
+              try {
+                result.availability = JSON.parse(provider.availability)
+              } catch {
+                result.availability = null
+              }
+            } else {
+              result.availability = null
+            }
+          } else {
+            result.availability = null
+          }
+        } catch (availError) {
+          console.error(`Error procesando availability para ${provider.id}:`, availError)
+          result.availability = null
+        }
+
         // Agregar fechas de forma segura
-        if (provider.createdAt) {
-          try {
+        try {
+          if (provider.createdAt) {
             result.createdAt = new Date(provider.createdAt).toISOString()
-          } catch {
+          } else {
             result.createdAt = new Date().toISOString()
           }
-        } else {
+        } catch {
           result.createdAt = new Date().toISOString()
         }
 
-        if (provider.updatedAt) {
-          try {
+        try {
+          if (provider.updatedAt) {
             result.updatedAt = new Date(provider.updatedAt).toISOString()
-          } catch {
+          } else {
             result.updatedAt = new Date().toISOString()
           }
-        } else {
+        } catch {
           result.updatedAt = new Date().toISOString()
         }
 
