@@ -14,37 +14,18 @@ export async function GET() {
       )
     }
 
-    // Obtener proveedores sin relaciones primero (más seguro)
+    // Obtener proveedores sin relaciones (más simple y robusto)
     const providers = await prisma.serviceProvider.findMany({
       orderBy: {
         createdAt: 'desc'
       }
     })
 
-    // Obtener servicios para cada proveedor por separado (más robusto)
-    const providersWithServices = await Promise.all(
-      providers.map(async (provider: any) => {
-        try {
-          const services = await prisma.service.findMany({
-            where: {
-              providers: {
-                some: {
-                  id: provider.id
-                }
-              }
-            },
-            select: {
-              id: true,
-              name: true,
-            }
-          })
-          return { ...provider, services }
-        } catch (error) {
-          console.error(`Error obteniendo servicios para proveedor ${provider.id}:`, error)
-          return { ...provider, services: [] }
-        }
-      })
-    )
+    // Inicializar con servicios vacíos
+    const providersWithServices = providers.map((provider: any) => ({
+      ...provider,
+      services: []
+    }))
 
     // Serializar correctamente los campos para JSON
     const serializedProviders = providersWithServices.map((provider: any) => {
