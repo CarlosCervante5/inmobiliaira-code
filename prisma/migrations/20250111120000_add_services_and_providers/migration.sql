@@ -51,7 +51,6 @@ CREATE TABLE "ServiceProvider" (
     "availability" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "serviceIds" TEXT[],
 
     CONSTRAINT "ServiceProvider_pkey" PRIMARY KEY ("id")
 );
