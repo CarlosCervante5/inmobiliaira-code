@@ -28,11 +28,40 @@ export async function GET() {
       }
     })
 
-    // Serializar correctamente el campo availability (JSON)
-    const serializedProviders = providers.map((provider: any) => ({
-      ...provider,
-      availability: provider.availability || null,
-    }))
+    // Serializar correctamente los campos para JSON
+    const serializedProviders = providers.map((provider: any) => {
+      // Convertir Prisma JSON a objeto JavaScript si es necesario
+      let availability = null
+      if (provider.availability) {
+        try {
+          // Si ya es un objeto, usarlo directamente
+          availability = typeof provider.availability === 'object' 
+            ? provider.availability 
+            : JSON.parse(provider.availability)
+        } catch {
+          availability = provider.availability
+        }
+      }
+
+      return {
+        id: provider.id,
+        name: provider.name,
+        email: provider.email,
+        phone: provider.phone,
+        address: provider.address,
+        bio: provider.bio,
+        specialties: provider.specialties || [],
+        experience: provider.experience,
+        rating: provider.rating,
+        totalReviews: provider.totalReviews,
+        isActive: provider.isActive,
+        isVerified: provider.isVerified,
+        availability: availability,
+        createdAt: provider.createdAt.toISOString(),
+        updatedAt: provider.updatedAt.toISOString(),
+        services: provider.services || [],
+      }
+    })
 
     return NextResponse.json(serializedProviders)
   } catch (error: any) {
