@@ -211,7 +211,9 @@ export default function AdminServiceProvidersPage() {
                           <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
                             {provider.name}
                             {provider.isVerified && (
-                              <Shield className="h-4 w-4 text-green-500" title="Verificado" />
+                              <span title="Verificado">
+                                <Shield className="h-4 w-4 text-green-500" />
+                              </span>
                             )}
                           </div>
                           {provider.bio && (

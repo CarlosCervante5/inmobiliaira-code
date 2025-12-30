@@ -127,7 +127,7 @@ export async function GET() {
         brokers: brokerCount,
         clients: clientCount,
       },
-      testUsers: testUsers.map(u => ({
+      testUsers: testUsers.map((u: { email: string; name: string | null; role: string; password: string | null }) => ({
         email: u.email,
         name: u.name,
         role: u.role,

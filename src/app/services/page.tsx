@@ -20,9 +20,7 @@ import {
   Trash2,
   Brush,
   DoorOpen,
-  Window,
-  Floor,
-  Roofing,
+  Square,
   ArrowRight,
   CheckCircle,
   Star

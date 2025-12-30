@@ -47,7 +47,7 @@ export async function GET() {
       prisma.serviceProvider.count({ where: { isActive: true } }).catch(() => 0)
     ])
 
-    const totalValue = properties.reduce((sum, prop) => sum + prop.price, 0)
+    const totalValue = properties.reduce((sum: number, prop: { price: number }) => sum + prop.price, 0)
 
     return NextResponse.json({
       totalUsers,
