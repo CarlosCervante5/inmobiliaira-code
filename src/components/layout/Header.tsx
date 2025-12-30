@@ -117,62 +117,103 @@ export function Header() {
           </div>
         </div>
 
-        {/* Menú móvil */}
+        {/* Overlay para móvil */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200">
-            <div className="space-y-1 px-3 pb-4 pt-3">
+          <div 
+            className="md:hidden fixed inset-0 z-30 bg-black bg-opacity-50 transition-opacity"
+            onClick={() => setIsMenuOpen(false)}
+          />
+        )}
+
+        {/* Sidebar móvil */}
+        <div className={`md:hidden fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+          <div className="flex flex-col h-full">
+            {/* Header del sidebar */}
+            <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+              <Link href="/" className="flex items-center space-x-2" onClick={() => setIsMenuOpen(false)}>
+                <Building2 className="h-8 w-8 text-blue-600" />
+                <span className="text-xl font-bold text-gray-900">Catálogo</span>
+              </Link>
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            {/* Navegación */}
+            <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center space-x-2 rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
+                  className="flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
                 >
-                  <item.icon className="h-4 w-4" />
+                  <item.icon className="h-5 w-5" />
                   <span>{item.name}</span>
                 </Link>
               ))}
-              
+            </nav>
 
+            {/* Usuario y acciones */}
+            <div className="p-4 border-t border-gray-200">
               {session ? (
-                <div className="border-t border-gray-200 pt-3 mt-2">
-                  <div className="px-3 py-2 mb-2">
-                    <p className="text-xs font-semibold text-gray-500 uppercase">Mi Cuenta</p>
+                <>
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <User className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {session.user?.name || 'Usuario'}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {session.user?.email}
+                      </p>
+                    </div>
                   </div>
-                  {userNavigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
+                  
+                  <div className="space-y-1 mb-4">
+                    {userNavigation.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                  
                   <button
                     onClick={() => {
                       signOut()
                       setIsMenuOpen(false)
                     }}
-                    className="flex w-full items-center space-x-2 rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
+                    className="flex w-full items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Cerrar Sesión</span>
                   </button>
-                </div>
+                </>
               ) : (
-                <div className="border-t border-gray-200 pt-3 mt-2">
+                <div className="space-y-2">
                   <Link 
                     href="/auth/signin" 
                     onClick={() => setIsMenuOpen(false)}
-                    className="block rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
+                    className="block w-full rounded-md px-3 py-2 text-sm font-medium text-center text-gray-700 hover:bg-gray-100"
                   >
                     Iniciar Sesión
                   </Link>
                   <Link 
                     href="/auth/signup" 
                     onClick={() => setIsMenuOpen(false)}
-                    className="block rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 active:bg-gray-200"
+                    className="block w-full rounded-md px-3 py-2 text-sm font-medium text-center bg-blue-600 text-white hover:bg-blue-700"
                   >
                     Registrarse
                   </Link>
@@ -180,7 +221,7 @@ export function Header() {
               )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </header>
   )
