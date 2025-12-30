@@ -14,19 +14,49 @@ export async function GET() {
       )
     }
 
-    const providers = await prisma.serviceProvider.findMany({
-      include: {
-        services: {
-          select: {
-            id: true,
-            name: true,
-          }
+    // Primero intentar obtener sin relaciones para ver si la tabla existe
+    let providers
+    try {
+      providers = await prisma.serviceProvider.findMany({
+        orderBy: {
+          createdAt: 'desc'
         }
-      },
-      orderBy: {
-        createdAt: 'desc'
+      })
+    } catch (dbError: any) {
+      console.error('Error en query básica:', dbError)
+      // Si falla, puede ser que la tabla no existe
+      if (dbError.code === 'P2021' || dbError.message?.includes('does not exist')) {
+        return NextResponse.json(
+          { error: 'La tabla ServiceProvider no existe. Ejecuta las migraciones primero.', details: dbError.message },
+          { status: 500 }
+        )
       }
-    })
+      throw dbError
+    }
+
+    // Si hay proveedores, obtener sus servicios
+    if (providers.length > 0) {
+      try {
+        const providersWithServices = await prisma.serviceProvider.findMany({
+          include: {
+            services: {
+              select: {
+                id: true,
+                name: true,
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        })
+        providers = providersWithServices
+      } catch (relationError: any) {
+        console.error('Error obteniendo relaciones:', relationError)
+        // Si falla la relación, continuar sin servicios
+        console.log('Continuando sin relaciones de servicios')
+      }
+    }
 
     // Serializar correctamente los campos para JSON
     const serializedProviders = providers.map((provider: any) => {
@@ -48,26 +78,33 @@ export async function GET() {
         name: provider.name,
         email: provider.email,
         phone: provider.phone,
-        address: provider.address,
-        bio: provider.bio,
-        specialties: provider.specialties || [],
+        address: provider.address || null,
+        bio: provider.bio || null,
+        specialties: Array.isArray(provider.specialties) ? provider.specialties : [],
         experience: provider.experience,
         rating: provider.rating,
-        totalReviews: provider.totalReviews,
-        isActive: provider.isActive,
-        isVerified: provider.isVerified,
+        totalReviews: provider.totalReviews || 0,
+        isActive: provider.isActive ?? true,
+        isVerified: provider.isVerified ?? false,
         availability: availability,
-        createdAt: provider.createdAt.toISOString(),
-        updatedAt: provider.updatedAt.toISOString(),
-        services: provider.services || [],
+        createdAt: provider.createdAt ? new Date(provider.createdAt).toISOString() : new Date().toISOString(),
+        updatedAt: provider.updatedAt ? new Date(provider.updatedAt).toISOString() : new Date().toISOString(),
+        services: Array.isArray(provider.services) ? provider.services : [],
       }
     })
 
     return NextResponse.json(serializedProviders)
   } catch (error: any) {
     console.error('Error fetching service providers:', error)
+    console.error('Error stack:', error.stack)
+    console.error('Error code:', error.code)
     return NextResponse.json(
-      { error: 'Error al obtener profesionales', details: error.message },
+      { 
+        error: 'Error al obtener profesionales', 
+        details: error.message,
+        code: error.code,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      },
       { status: 500 }
     )
   }
