@@ -9,9 +9,19 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        sans: ['var(--font-avenir)', 'Avenir Next', 'Avenir', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       colors: {
+        /* Paleta de marca */
+        brand: {
+          'dark-green': '#244029',
+          beige: '#F2DCB3',
+          muted: '#9FA69F',
+          'grey-green': '#4C594C',
+          'off-white': '#F2F2F2',
+          taupe: '#C78CB5',
+          'pastel-green': '#D1E3CF',
+        },
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',

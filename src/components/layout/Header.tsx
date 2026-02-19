@@ -2,20 +2,25 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
-import { Menu, X, User, LogOut, Home, Building2, Wrench, Calculator } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Menu, X, User, LogOut, Building2, Wrench, Calculator } from 'lucide-react'
+
+const NAV_LINKS = [
+  { name: 'Propiedades', href: '/properties' },
+  { name: 'Servicios', href: '/services' },
+  { name: 'Simulador INFONAVIT', href: '/simulador-infonavit' },
+]
+
+const NAV_LINKS_WITH_ICONS = [
+  { name: 'Propiedades', href: '/properties', icon: Building2 },
+  { name: 'Servicios', href: '/services', icon: Wrench },
+  { name: 'Simulador INFONAVIT', href: '/simulador-infonavit', icon: Calculator },
+]
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { data: session, status } = useSession()
-
-  const navigation = [
-    { name: 'Inicio', href: '/', icon: Home },
-    { name: 'Propiedades', href: '/properties', icon: Building2 },
-    { name: 'Servicios', href: '/services', icon: Wrench },
-    { name: 'Simulador INFONAVIT', href: '/simulador-infonavit', icon: Calculator },
-  ]
 
   const userNavigation = [
     { name: 'Mi Perfil', href: '/dashboard/profile' },
@@ -31,199 +36,188 @@ export function Header() {
   }
 
   return (
-    <header className="bg-white shadow-sm">
-      <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8">
-        <div className="flex h-14 sm:h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center flex-shrink-0">
-            <Link href="/" className="flex items-center">
-              <Building2 className="h-8 w-8 text-blue-600" />
-            </Link>
-          </div>
-
-          {/* Navegación Desktop */}
-          <nav className="hidden md:flex md:space-x-8">
-            {navigation.map((item) => (
+    <header className="bg-white border-b border-brand-muted/30">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between relative">
+          {/* Navegación izquierda */}
+          <nav className="hidden md:flex items-center gap-8 flex-1">
+            {NAV_LINKS.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="flex items-center space-x-1 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                className="text-brand-grey-green text-[15px] font-normal hover:text-brand-dark-green transition-colors"
               >
-                <item.icon className="h-4 w-4" />
-                <span>{item.name}</span>
+                {item.name}
               </Link>
             ))}
           </nav>
 
+          {/* Logo centrado */}
+          <Link
+            href="/"
+            className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center"
+            aria-label="HABIK - Inicio"
+          >
+            <Image
+              src="/logo-habik.png"
+              alt="HABIK"
+              width={120}
+              height={40}
+              className="h-9 w-auto object-contain"
+              priority
+            />
+          </Link>
 
-          {/* Usuario */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          {/* Acciones derecha: Iniciar sesión / Registrarse o menú usuario */}
+          <div className="flex items-center gap-4 flex-1 justify-end">
             {status === 'loading' ? (
-              <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
+              <div className="h-8 w-8 animate-pulse rounded-full bg-brand-muted/50" />
             ) : session ? (
               <div className="hidden sm:block relative group">
-                <button className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
+                <button className="flex items-center gap-2 text-brand-grey-green text-[15px] font-normal hover:text-brand-dark-green py-2 px-3 rounded-md hover:bg-brand-pastel-green/40 transition-colors">
                   <User className="h-4 w-4" />
-                  <span className="hidden lg:inline">{session.user?.name}</span>
+                  <span className="max-w-[120px] truncate">{session.user?.name}</span>
                 </button>
-                
-                {/* Dropdown */}
-                <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="absolute right-0 mt-1 w-48 origin-top-right rounded-lg bg-white py-1 shadow-lg ring-1 ring-brand-muted/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-brand-muted/20">
                   {userNavigation.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-brand-grey-green hover:bg-brand-pastel-green/30"
                     >
                       {item.name}
                     </Link>
                   ))}
                   <button
                     onClick={() => signOut()}
-                    className="flex w-full items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="flex w-full items-center gap-2 px-4 py-2 text-sm text-brand-grey-green hover:bg-brand-pastel-green/30"
                   >
                     <LogOut className="h-4 w-4" />
-                    <span>Cerrar Sesión</span>
+                    Cerrar Sesión
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="hidden sm:flex items-center space-x-2">
-                <Link href="/auth/signin">
-                  <Button variant="ghost" size="sm" className="text-xs sm:text-sm text-gray-700 hover:bg-gray-100">
-                    Iniciar Sesión
-                  </Button>
+              <div className="hidden sm:flex items-center gap-3">
+                <Link
+                  href="/auth/signin"
+                  className="text-brand-grey-green text-[15px] font-normal hover:text-brand-dark-green transition-colors"
+                >
+                  Iniciar sesión
                 </Link>
-                <Link href="/auth/signup">
-                  <Button size="sm" className="text-xs sm:text-sm bg-blue-600 text-white hover:bg-blue-700">
-                    Registrarse
-                  </Button>
+                <Link
+                  href="/auth/signup"
+                  className="rounded-full bg-brand-dark-green text-white text-[15px] font-normal px-5 py-2.5 hover:opacity-90 transition-opacity"
+                >
+                  Registrarse
                 </Link>
               </div>
             )}
 
-            {/* Menú móvil */}
+            {/* Botón menú móvil */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="sm:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              aria-label="Toggle menu"
+              className="md:hidden p-2 rounded-md text-brand-grey-green hover:bg-brand-pastel-green/40"
+              aria-label="Abrir menú"
             >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Overlay para móvil */}
-        {isMenuOpen && (
-          <div 
-            className="md:hidden fixed inset-0 z-30 bg-black bg-opacity-50 transition-opacity"
-            onClick={() => setIsMenuOpen(false)}
-          />
-        )}
+      {/* Overlay móvil */}
+      {isMenuOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-30 bg-black/50"
+          onClick={() => setIsMenuOpen(false)}
+          aria-hidden
+        />
+      )}
 
-        {/* Sidebar móvil */}
-        <div className={`md:hidden fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
+      {/* Menú móvil */}
+      <div
+        className={`md:hidden fixed inset-y-0 left-0 z-40 w-72 bg-white shadow-xl border-r border-brand-muted/40 transform transition-transform duration-300 ease-out ${
           isMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}>
-          <div className="flex flex-col h-full">
-            {/* Header del sidebar */}
-            <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
-              <Link href="/" className="flex items-center space-x-2" onClick={() => setIsMenuOpen(false)}>
-                <Building2 className="h-8 w-8 text-blue-600" />
-                <span className="text-xl font-bold text-gray-900">Catálogo</span>
-              </Link>
-              <button
+        }`}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between h-16 px-4 border-b border-brand-muted/40">
+            <Link href="/" className="flex items-center" onClick={() => setIsMenuOpen(false)}>
+              <Image
+                src="/logo-habik.png"
+                alt="HABIK"
+                width={100}
+                height={34}
+                className="h-8 w-auto object-contain"
+              />
+            </Link>
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="p-2 rounded-md text-brand-grey-green hover:bg-brand-pastel-green/40"
+              aria-label="Cerrar menú"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+          <nav className="flex-1 px-4 py-6 space-y-1">
+            {NAV_LINKS_WITH_ICONS.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-md text-brand-grey-green font-normal hover:bg-brand-pastel-green/40"
               >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-
-            {/* Navegación */}
-            <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                <item.icon className="h-5 w-5 text-brand-dark-green" />
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+          <div className="p-4 border-t border-brand-muted/40 space-y-2">
+            {session ? (
+              <>
+                {userNavigation.slice(0, 3).map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block py-2 text-sm text-brand-grey-green hover:text-brand-dark-green"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                <button
+                  onClick={() => {
+                    signOut()
+                    setIsMenuOpen(false)
+                  }}
+                  className="flex items-center gap-2 py-2 text-sm text-brand-grey-green hover:text-brand-dark-green"
                 >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.name}</span>
+                  <LogOut className="h-4 w-4" />
+                  Cerrar Sesión
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth/signin"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block py-2 text-brand-grey-green font-normal hover:text-brand-dark-green"
+                >
+                  Iniciar sesión
                 </Link>
-              ))}
-            </nav>
-
-            {/* Usuario y acciones */}
-            <div className="p-4 border-t border-gray-200">
-              {session ? (
-                <>
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                      <User className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {session.user?.name || 'Usuario'}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">
-                        {session.user?.email}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-1 mb-4">
-                    {userNavigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        className="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                  
-                  <button
-                    onClick={() => {
-                      signOut()
-                      setIsMenuOpen(false)
-                    }}
-                    className="flex w-full items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>Cerrar Sesión</span>
-                  </button>
-                </>
-              ) : (
-                <div className="space-y-2">
-                  <Link 
-                    href="/auth/signin" 
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block w-full rounded-md px-3 py-2 text-sm font-medium text-center text-gray-700 hover:bg-gray-100"
-                  >
-                    Iniciar Sesión
-                  </Link>
-                  <Link 
-                    href="/auth/signup" 
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block w-full rounded-md px-3 py-2 text-sm font-medium text-center bg-blue-600 text-white hover:bg-blue-700"
-                  >
-                    Registrarse
-                  </Link>
-                </div>
-              )}
-            </div>
+                <Link
+                  href="/auth/signup"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block rounded-full bg-brand-dark-green text-white text-center py-2.5 px-4 hover:opacity-90"
+                >
+                  Registrarse
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
     </header>
   )
 }
-
