@@ -97,25 +97,30 @@ const featuredProperties = [
 
 export default function HomePage() {
   const propertyTypes = [
-    { name: 'Casas', count: '1,234', icon: Home },
-    { name: 'Departamentos', count: '1,234', icon: Building2 },
-    { name: 'Terrenos', count: '1,234', icon: MapPin },
-    { name: 'Comerciales', count: '1,234', icon: Store },
+    { name: 'Casas', count: '1,234', icon: '/icons/casas.png' },
+    { name: 'Departamentos', count: '1,234', icon: '/icons/departamentos.png' },
+    { name: 'Terrenos', count: '1,234', icon: '/icons/terrenos.png' },
+    { name: 'Comerciales', count: '1,234', icon: '/icons/comerciales.png' },
   ]
 
   return (
     <div className="min-h-screen">
       {/* Hero: fondo verde, título, subtítulo y barra de búsqueda */}
-      <section className="bg-brand-dark-green py-14 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden py-14 sm:py-20 lg:py-24">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#6f8f7a] via-[#4f6f5d] to-[#2f4f3f]"/>
+
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.08),transparent_40%)]"/>
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white mb-8 sm:mb-12">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-5xl md:text-5xl lg:text-8xl">
               Encuentra una casa que se adapte a tu estilo de vida
             </h1>
             <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg text-white/95">
-              Filtra, compara y agenda tu visita en minutos.
+              Filtra, compra y agenda tu visita en minutos.
             </p>
           </div>
+
           <div className="mt-10">
             <HeroSearch />
           </div>
@@ -171,7 +176,13 @@ export default function HomePage() {
                 className="group flex items-center gap-4 rounded-xl border border-brand-muted/40 bg-white p-6 transition-all hover:shadow-md hover:border-brand-muted/60"
               >
                 <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center text-brand-dark-green">
-                  <type.icon className="h-8 w-8" strokeWidth={1.5} />
+                  <Image 
+                   src={type.icon}
+                   alt={type.name}
+                   width={100}
+                   height={100}
+                   className="object-contain"
+                   />
                 </div>
                 <div className="min-w-0">
                   <h3 className="text-lg font-bold text-brand-dark-green group-hover:text-brand-grey-green">
@@ -193,7 +204,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 px-2">
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold text-brand-dark-green">Servicios de Mantenimiento</h2>
-              <p className="mt-2 text-base sm:text-lg text-brand-grey-green">
+              <p className="mt-2 text-base sm:text-lg text-brand-grey-green leading-relaxed max-w-xs">
                 La forma fácil y confiable de cuidar tu hogar.
               </p>
             </div>
@@ -206,35 +217,35 @@ export default function HomePage() {
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-13 justify-items-center">
             {[
               {
                 name: 'Handyman',
-                icon: Hammer,
+                icon: '/icons/handyman.png',
                 description: 'Soluciones rápidas y eficientes para reparaciones menores en el hogar. Desde ajustes y cambios básicos hasta mantenimiento general.',
                 href: '/services/handyman',
               },
               {
                 name: 'Instalación',
-                icon: Wrench,
+                icon: '/icons/instalacion.png',
                 description: 'Instalamos equipos, accesorios y sistemas con precisión y seguridad. Garantizamos funcionamiento correcto desde el primer día.',
                 href: '/services/instalacion',
               },
               {
                 name: 'Limpieza',
-                icon: Sparkles,
+                icon: '/icons/limpieza.png',
                 description: 'Servicios de limpieza profunda y mantenimiento para mantener tus espacios impecables, saludables y listos para usarse.',
                 href: '/services/limpieza',
               },
               {
                 name: 'Proyectos exteriores',
-                icon: TreePine,
+                icon: '/icons/proyectos-exteriores.png',
                 description: 'Mejoramos y transformamos áreas exteriores como jardines, patios y fachadas para renovar la imagen de tu propiedad.',
                 href: '/services/proyectos-exteriores',
               },
               {
                 name: 'Renovaciones del hogar',
-                icon: Home,
+                icon: '/icons/renovacion-hogar.png',
                 description: 'Remodelaciones y mejoras que modernizan tus espacios, aumentando confort, funcionalidad y valor de tu hogar.',
                 href: '/services/renovaciones',
               },
@@ -242,10 +253,15 @@ export default function HomePage() {
               <Link
                 key={service.name}
                 href={service.href}
-                className="group flex flex-col p-6 transition-opacity hover:opacity-90"
+                className="group flex flex-col items-center text-center p-6 transition-opacity hover:opacity-90"
               >
                 <div className="flex h-12 w-12 items-center justify-center text-brand-dark-green">
-                  <service.icon className="h-8 w-8" strokeWidth={1.5} />
+                  <Image
+                   src={service.icon}
+                   alt={service.name}
+                   width={40}
+                   height={40}
+                   className="object-contain"/>
                 </div>
                 <h3 className="mt-4 text-lg font-bold text-brand-dark-green group-hover:text-brand-grey-green">
                   {service.name}
@@ -333,28 +349,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer - fondo claro, texto oscuro según diseño */}
-      <footer className="bg-[#f8f8f8]">
+      {/* Footer - fondo blanco */}
+      <footer className="bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Email + Registrate */}
-          <div className="py-8 border-b border-gray-200">
-            <CTAEmailForm variant="footer" />
-          </div>
-
+          
           <div className="py-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Logo + tagline - icono en cuadrado beige según diseño */}
+            {/* Logo footer (icono + HABIK) + tagline */}
             <div className="lg:col-span-1">
-              <Link href="/" className="inline-flex items-center gap-3">
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-beige flex-shrink-0 overflow-hidden p-1.5">
-                  <Image
-                    src="/logo-habik.png"
-                    alt="HABIK"
-                    width={48}
-                    height={48}
-                    className="h-full w-full object-contain"
-                  />
-                </span>
-                <span className="text-xl font-bold text-gray-800">HABIK</span>
+              <Link href="/" className="inline-block">
+                <Image
+                  src="/logo-habik-footer.png"
+                  alt="HABIK"
+                  width={140}
+                  height={80}
+                  className="h-35 w-auto object-contain object-left"
+                />
               </Link>
               <p className="mt-3 text-sm text-gray-600">
                 La plataforma inmobiliaria más completa de México.
@@ -388,7 +398,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="py-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="py-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-gray-500">
               © 2024 Habik. Todos los derechos reservados.
             </p>

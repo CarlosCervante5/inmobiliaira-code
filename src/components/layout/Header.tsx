@@ -59,11 +59,11 @@ export function Header() {
             aria-label="HABIK - Inicio"
           >
             <Image
-              src="/logo-habik.png"
+              src="/habiklogo.png"
               alt="HABIK"
               width={120}
               height={40}
-              className="h-9 w-auto object-contain"
+              className="h-25 w-auto object-contain"
               priority
             />
           </Link>
