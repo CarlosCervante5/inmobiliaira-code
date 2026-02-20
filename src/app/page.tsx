@@ -1,7 +1,10 @@
 import Link from 'next/link'
-import { Search, Home, Building2, CreditCard, Users, Shield, CheckCircle, Bed, Bath, Maximize, Wrench, Sparkles, Hammer, MapPin } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Home, Building2, Bed, Bath, Maximize, Wrench, Sparkles, Hammer, ArrowRight, MapPin, Store, TreePine, Globe, Mail, Phone } from 'lucide-react'
 import Image from 'next/image'
+import { HeroSearch } from '@/components/home/HeroSearch'
+import { PropertyFilters } from '@/components/home/PropertyFilters'
+import { FeaturedPropertyCard } from '@/components/home/FeaturedPropertyCard'
+import { CTAEmailForm } from '@/components/home/CTAEmailForm'
 
 // Propiedades destacadas para mostrar en el home
 const featuredProperties = [
@@ -60,6 +63,7 @@ const featuredProperties = [
     city: 'Ciudad de México',
     state: 'CDMX',
     image: '/images/properties/depto-lujo.jpg',
+    openHouse: true,
   },
   {
     id: '5',
@@ -92,203 +96,101 @@ const featuredProperties = [
 ]
 
 export default function HomePage() {
-  const features = [
-    {
-      icon: Search,
-      title: 'Búsqueda Avanzada',
-      description: 'Encuentra propiedades con filtros específicos de ubicación, precio y características.'
-    },
-    {
-      icon: CreditCard,
-      title: 'Simulador INFONAVIT',
-      description: 'Calcula tu capacidad de crédito INFONAVIT y descubre cuánto puedes obtener para tu vivienda.'
-    },
-    {
-      icon: Users,
-      title: 'Brókers Profesionales',
-      description: 'Conecta con brókers certificados que te ayudarán a encontrar tu hogar ideal.'
-    },
-    {
-      icon: Shield,
-      title: 'Información Segura',
-      description: 'Tus datos están protegidos con las mejores prácticas de seguridad.'
-    }
-  ]
-
   const propertyTypes = [
-    { name: 'Casas', count: '1,234', icon: Home },
-    { name: 'Departamentos', count: '856', icon: Building2 },
-    { name: 'Terrenos', count: '342', icon: Building2 },
-    { name: 'Comerciales', count: '189', icon: Building2 },
+    { name: 'Casas', count: '1,234', icon: '/icons/casas.png' },
+    { name: 'Departamentos', count: '1,234', icon: '/icons/departamentos.png' },
+    { name: 'Terrenos', count: '1,234', icon: '/icons/terrenos.png' },
+    { name: 'Comerciales', count: '1,234', icon: '/icons/comerciales.png' },
   ]
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section estilo Homes.com */}
-      <section className="relative py-16 sm:py-20 lg:py-24 overflow-hidden">
-        {/* Imagen de fondo */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1973&q=80')`
-          }}
-        >
-          {/* Overlay oscuro para mejor legibilidad */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/75 to-blue-900/80"></div>
-        </div>
-        
+      {/* Hero: fondo verde, título, subtítulo y barra de búsqueda */}
+      <section className="relative overflow-hidden py-14 sm:py-20 lg:py-24">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#6f8f7a] via-[#4f6f5d] to-[#2f4f3f]"/>
+
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.08),transparent_40%)]"/>
+
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white mb-8 sm:mb-12">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-              El lugar para encontrar un lugar
+            <h1 className="text-3xl font-bold tracking-tight sm:text-5xl md:text-5xl lg:text-8xl">
+              Encuentra una casa que se adapte a tu estilo de vida
             </h1>
-            <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg leading-7 sm:leading-8 text-blue-100 px-2">
-              Encuentra tu hogar ideal entre miles de propiedades disponibles
+            <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg text-white/95">
+              Filtra, compra y agenda tu visita en minutos.
             </p>
           </div>
-          
-          {/* Buscador grande en el hero */}
-          <div className="mt-8 max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-2xl p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
-                {/* Dropdown de tipo */}
-                <div className="sm:w-32">
-                  <select className="w-full rounded-md border border-gray-300 bg-white px-3 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option>En Venta</option>
-                    <option>En Renta</option>
-                    <option>Todos</option>
-                  </select>
-                </div>
-                
-                {/* Input de búsqueda principal */}
-                <div className="flex-1 relative">
-                  <MapPin className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Busca por ciudad, colonia, dirección..."
-                    className="w-full rounded-md border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                
-                {/* Botón de búsqueda */}
-                <Button className="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white">
-                  <Search className="h-5 w-5 mr-2" />
-                  Buscar
-                </Button>
-              </div>
-            </div>
+
+          <div className="mt-10">
+            <HeroSearch />
           </div>
         </div>
       </section>
 
-      {/* Propiedades Destacadas */}
-      <section className="bg-gray-50 py-12 sm:py-16">
+      {/* Propiedades disponibles */}
+      <section className="bg-white py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8 px-2">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Propiedades Disponibles</h2>
-              <p className="mt-2 text-base sm:text-lg text-gray-600">
-                Descubre las mejores opciones para tu nuevo hogar
+              <h2 className="text-2xl sm:text-3xl font-bold text-brand-dark-green">Propiedades disponibles</h2>
+              <p className="mt-2 text-base sm:text-lg text-brand-grey-green">
+                Explora nuestras opciones actualizadas y encuentra la ideal para ti.
               </p>
             </div>
-            <Link href="/properties">
-              <Button variant="outline">
-                Ver todas
-              </Button>
+            <Link
+              href="/properties"
+              className="inline-flex items-center gap-1.5 text-brand-grey-green font-medium hover:text-brand-dark-green transition-colors self-start sm:self-auto"
+            >
+              Ver más
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
+
+          <div className="mb-8">
+            <PropertyFilters />
+          </div>
           
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredProperties.map((property) => (
-              <Link
-                key={property.id}
-                href={`/properties/${property.id}`}
-                className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-xl"
-              >
-                <div className="relative h-48 w-full overflow-hidden">
-                  <Image
-                    src={property.image}
-                    alt={property.title}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-110"
-                  />
-                  <div className="absolute top-3 right-3 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
-                    {property.type}
-                  </div>
-                </div>
-                
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
-                    {property.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-600 line-clamp-2">
-                    {property.description}
-                  </p>
-                  
-                  <div className="mt-3 flex items-center text-xs text-gray-500">
-                    <span className="truncate">{property.address}</span>
-                  </div>
-                  
-                  <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                      {property.bedrooms > 0 && (
-                        <div className="flex items-center gap-1">
-                          <Bed className="h-4 w-4" />
-                          <span>{property.bedrooms}</span>
-                        </div>
-                      )}
-                      {property.bathrooms > 0 && (
-                        <div className="flex items-center gap-1">
-                          <Bath className="h-4 w-4" />
-                          <span>{property.bathrooms}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-1">
-                        <Maximize className="h-4 w-4" />
-                        <span>{property.area}m²</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-3">
-                    <p className="text-2xl font-bold text-blue-600">
-                      ${property.price.toLocaleString('es-MX')}
-                    </p>
-                  </div>
-                </div>
-              </Link>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featuredProperties.slice(0, 4).map((property) => (
+              <FeaturedPropertyCard key={property.id} property={property} />
             ))}
           </div>
         </div>
       </section>
 
 
-      {/* Property Types */}
-      <section className="bg-gray-50 py-12 sm:py-16">
+      {/* Explora por tipo de propiedad */}
+      <section className="bg-white py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center px-2">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Explora por tipo de propiedad</h2>
-            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
+            <h2 className="text-2xl sm:text-3xl font-bold text-brand-dark-green">Explora por tipo de propiedad</h2>
+            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-brand-grey-green">
               Encuentra el tipo de propiedad que mejor se adapte a tus necesidades
             </p>
           </div>
-          <div className="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
             {propertyTypes.map((type) => (
               <Link
                 key={type.name}
                 href={`/properties?type=${type.name.toLowerCase()}`}
-                className="group relative overflow-hidden rounded-lg bg-white p-6 shadow-md transition-shadow hover:shadow-lg"
+                className="group flex items-center gap-4 rounded-xl border border-brand-muted/40 bg-white p-6 transition-all hover:shadow-md hover:border-brand-muted/60"
               >
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <type.icon className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
-                      {type.name}
-                    </h3>
-                    <p className="text-sm text-gray-500">{type.count} disponibles</p>
-                  </div>
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center text-brand-dark-green">
+                  <Image 
+                   src={type.icon}
+                   alt={type.name}
+                   width={100}
+                   height={100}
+                   className="object-contain"
+                   />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-lg font-bold text-brand-dark-green group-hover:text-brand-grey-green">
+                    {type.name}
+                  </h3>
+                  <p className="mt-0.5 text-sm font-medium text-brand-muted uppercase tracking-wide">
+                    {type.count} disponibles
+                  </p>
                 </div>
               </Link>
             ))}
@@ -299,44 +201,130 @@ export default function HomePage() {
       {/* Servicios de Mantenimiento */}
       <section className="bg-white py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8 px-2">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 px-2">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Servicios de Mantenimiento</h2>
-              <p className="mt-2 text-base sm:text-lg text-gray-600">
-                La forma fácil y confiable de cuidar tu hogar
+              <h2 className="text-2xl sm:text-3xl font-bold text-brand-dark-green">Servicios de Mantenimiento</h2>
+              <p className="mt-2 text-base sm:text-lg text-brand-grey-green leading-relaxed max-w-xs">
+                La forma fácil y confiable de cuidar tu hogar.
               </p>
             </div>
-            <Link href="/services">
-              <Button variant="outline">
-                Ver todos
-              </Button>
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-1.5 text-brand-dark-green font-medium hover:text-brand-grey-green transition-colors self-start sm:self-auto"
+            >
+              Ver más
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-13 justify-items-center">
             {[
-              { name: 'Limpieza', icon: Sparkles, description: 'Limpieza profesional', color: 'bg-blue-100 text-blue-600', href: '/services/limpieza' },
-              { name: 'Instalación', icon: Wrench, description: 'Montaje e instalación', color: 'bg-green-100 text-green-600', href: '/services/instalacion' },
-              { name: 'Handyman', icon: Hammer, description: 'Reparaciones generales', color: 'bg-orange-100 text-orange-600', href: '/services/handyman' },
-              { name: 'Renovaciones', icon: Home, description: 'Remodelación completa', color: 'bg-purple-100 text-purple-600', href: '/services/renovaciones' },
-            ].map((service, index) => (
+              {
+                name: 'Handyman',
+                icon: '/icons/handyman.png',
+                description: 'Soluciones rápidas y eficientes para reparaciones menores en el hogar. Desde ajustes y cambios básicos hasta mantenimiento general.',
+                href: '/services/handyman',
+              },
+              {
+                name: 'Instalación',
+                icon: '/icons/instalacion.png',
+                description: 'Instalamos equipos, accesorios y sistemas con precisión y seguridad. Garantizamos funcionamiento correcto desde el primer día.',
+                href: '/services/instalacion',
+              },
+              {
+                name: 'Limpieza',
+                icon: '/icons/limpieza.png',
+                description: 'Servicios de limpieza profunda y mantenimiento para mantener tus espacios impecables, saludables y listos para usarse.',
+                href: '/services/limpieza',
+              },
+              {
+                name: 'Proyectos exteriores',
+                icon: '/icons/proyectos-exteriores.png',
+                description: 'Mejoramos y transformamos áreas exteriores como jardines, patios y fachadas para renovar la imagen de tu propiedad.',
+                href: '/services/proyectos-exteriores',
+              },
+              {
+                name: 'Renovaciones del hogar',
+                icon: '/icons/renovacion-hogar.png',
+                description: 'Remodelaciones y mejoras que modernizan tus espacios, aumentando confort, funcionalidad y valor de tu hogar.',
+                href: '/services/renovaciones',
+              },
+            ].map((service) => (
               <Link
-                key={index}
+                key={service.name}
                 href={service.href}
-                className="group relative overflow-hidden rounded-lg bg-white border-2 border-gray-200 p-6 transition-all hover:border-blue-500 hover:shadow-lg"
+                className="group flex flex-col items-center text-center p-6 transition-opacity hover:opacity-90"
               >
-                <div className={`${service.color} w-12 h-12 rounded-lg flex items-center justify-center mb-4`}>
-                  <service.icon className="h-6 w-6" />
+                <div className="flex h-12 w-12 items-center justify-center text-brand-dark-green">
+                  <Image
+                   src={service.icon}
+                   alt={service.name}
+                   width={40}
+                   height={40}
+                   className="object-contain"/>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
+                <h3 className="mt-4 text-lg font-bold text-brand-dark-green group-hover:text-brand-grey-green">
                   {service.name}
                 </h3>
-                <p className="mt-2 text-sm text-gray-600">
+                <p className="mt-2 text-sm text-brand-grey-green leading-relaxed">
                   {service.description}
                 </p>
-                <div className="mt-4 flex items-center text-sm text-blue-600 group-hover:text-blue-700">
-                  Ver servicios
-                  <span className="ml-2">→</span>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand-dark-green group-hover:underline">
+                  Ver más
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Explora Zonas - layout asimétrico: 1 grande izquierda, 4 derecha */}
+      <section className="bg-[#f8f8f8] py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-brand-dark-green mb-8">
+            Explora Zonas
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 grid-rows-[auto_auto] lg:grid-rows-2">
+            <Link
+              href="/properties?zone=downtown-core"
+              className="group relative overflow-hidden rounded-2xl shadow-md lg:row-span-2 min-h-[240px] lg:min-h-[420px]"
+            >
+              <Image
+                src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&q=80"
+                alt="Downtown Core"
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 1024px) 100vw, 33vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-white">Downtown Core</h3>
+                <p className="mt-1 text-sm text-white/90">120 active listings</p>
+              </div>
+            </Link>
+            {[
+              { name: 'Suburban Green', listings: 85, image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&q=80' },
+              { name: 'Waterfront', listings: 42, image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80' },
+              { name: 'Historic District', listings: 19, image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80' },
+              { name: 'Metro Area', listings: 63, image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80' },
+            ].map((zone) => (
+              <Link
+                key={zone.name}
+                href={`/properties?zone=${encodeURIComponent(zone.name.toLowerCase().replace(/\s+/g, '-'))}`}
+                className="group relative aspect-[2/1] sm:aspect-[16/10] overflow-hidden rounded-2xl shadow-md"
+              >
+                <Image
+                  src={zone.image}
+                  alt={zone.name}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
+                  <h3 className="text-lg sm:text-xl font-bold text-white">{zone.name}</h3>
+                  <p className="mt-0.5 text-sm text-white/90">{zone.listings} active listings</p>
                 </div>
               </Link>
             ))}
@@ -344,96 +332,87 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="bg-white py-12 sm:py-16">
+      {/* CTA Section - texto e input alineados a la izquierda, bloque verde con bordes redondeados */}
+      <section className="bg-brand-dark-green py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center px-2">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">¿Por qué elegirnos?</h2>
-            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
-              Ofrecemos las mejores herramientas para tu búsqueda inmobiliaria
-            </p>
-          </div>
-          <div className="mt-8 sm:mt-12 grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map((feature) => (
-              <div key={feature.title} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-blue-600 text-white">
-                  <feature.icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                  {feature.title}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-blue-600 py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center px-2">
+          <div className="text-left">
             <h2 className="text-2xl sm:text-3xl font-bold text-white">
               ¿Listo para encontrar tu hogar ideal?
             </h2>
-            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-blue-100">
-              Únete a miles de personas que ya encontraron su hogar con nosotros
+            <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/90">
+              Únete a miles de personas que ya encontraron su hogar con nosotros.
             </p>
-            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-x-6 px-4">
-              <Link href="/auth/signup" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-gray-100">
-                  <span className="text-sm sm:text-base">Comenzar Ahora</span>
-                </Button>
-              </Link>
-              <Link href="/properties" className="w-full sm:w-auto">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-blue-600">
-                  <span className="text-sm sm:text-base">Ver Propiedades</span>
-                </Button>
-              </Link>
+            <div className="mt-6 sm:mt-8">
+              <CTAEmailForm variant="ctaLeft" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 py-8 sm:py-12">
+      {/* Footer - fondo blanco */}
+      <footer className="bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <h3 className="text-lg font-semibold text-white">Catálogo Inmobiliario</h3>
-              <p className="mt-2 text-sm text-gray-400">
+          {/* Email + Registrate */}
+          
+          <div className="py-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Logo footer (icono + HABIK) + tagline */}
+            <div className="lg:col-span-1">
+              <Link href="/" className="inline-block">
+                <Image
+                  src="/logo-habik-footer.png"
+                  alt="HABIK"
+                  width={140}
+                  height={80}
+                  className="h-35 w-auto object-contain object-left"
+                />
+              </Link>
+              <p className="mt-3 text-sm text-gray-600">
                 La plataforma inmobiliaria más completa de México.
               </p>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-white">Enlaces</h4>
-              <ul className="mt-2 space-y-2 text-sm text-gray-400">
-                <li><Link href="/properties" className="hover:text-white">Propiedades</Link></li>
-                <li><Link href="/services" className="hover:text-white">Servicios de Mantenimiento</Link></li>
-                <li><Link href="/about" className="hover:text-white">Acerca de</Link></li>
-                <li><Link href="/contact" className="hover:text-white">Contacto</Link></li>
+              <h4 className="text-sm font-semibold text-gray-800">Enlaces</h4>
+              <ul className="mt-3 space-y-2 text-sm text-gray-600">
+                <li><Link href="/properties" className="hover:text-brand-dark-green transition-colors">Propiedades</Link></li>
+                <li><Link href="/services" className="hover:text-brand-dark-green transition-colors">Servicios de Mantenimiento</Link></li>
+                <li><Link href="/about" className="hover:text-brand-dark-green transition-colors">Acerca de</Link></li>
+                <li><Link href="/contact" className="hover:text-brand-dark-green transition-colors">Contacto</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-white">Para Brókers</h4>
-              <ul className="mt-2 space-y-2 text-sm text-gray-400">
-                <li><Link href="/auth/signup?role=broker" className="hover:text-white">Registrarse</Link></li>
-                <li><Link href="/dashboard" className="hover:text-white">Panel de Control</Link></li>
+              <h4 className="text-sm font-semibold text-gray-800">Para Brókers</h4>
+              <ul className="mt-3 space-y-2 text-sm text-gray-600">
+                <li><Link href="/about" className="hover:text-brand-dark-green transition-colors">About Us</Link></li>
+                <li><Link href="/agents" className="hover:text-brand-dark-green transition-colors">Our Agents</Link></li>
+                <li><Link href="/careers" className="hover:text-brand-dark-green transition-colors">Careers</Link></li>
+                <li><Link href="/press" className="hover:text-brand-dark-green transition-colors">Press Room</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-white">Soporte</h4>
-              <ul className="mt-2 space-y-2 text-sm text-gray-400">
-                <li><Link href="/help" className="hover:text-white">Ayuda</Link></li>
-                <li><Link href="/privacy" className="hover:text-white">Privacidad</Link></li>
-                <li><Link href="/terms" className="hover:text-white">Términos</Link></li>
+              <h4 className="text-sm font-semibold text-gray-800">Soporte</h4>
+              <ul className="mt-3 space-y-2 text-sm text-gray-600">
+                <li><Link href="/help" className="hover:text-brand-dark-green transition-colors">Ayuda</Link></li>
+                <li><Link href="/privacy" className="hover:text-brand-dark-green transition-colors">Privacidad</Link></li>
+                <li><Link href="/terms" className="hover:text-brand-dark-green transition-colors">Términos</Link></li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 Catálogo Inmobiliario. Todos los derechos reservados.</p>
+
+          <div className="py-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-gray-500">
+              © 2024 Habik. Todos los derechos reservados.
+            </p>
+            <div className="flex items-center gap-5">
+              <a href="/" className="text-gray-500 hover:text-brand-dark-green transition-colors" aria-label="Sitio web">
+                <Globe className="h-5 w-5" />
+              </a>
+              <a href="mailto:contacto@habik.com" className="text-gray-500 hover:text-brand-dark-green transition-colors" aria-label="Email">
+                <Mail className="h-5 w-5" />
+              </a>
+              <a href="tel:+525512345678" className="text-gray-500 hover:text-brand-dark-green transition-colors" aria-label="Teléfono">
+                <Phone className="h-5 w-5" />
+              </a>
+            </div>
           </div>
         </div>
       </footer>

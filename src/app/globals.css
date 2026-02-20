@@ -1,20 +1,39 @@
 @import "tailwindcss";
 
+/* Paleta cromática de marca */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --font-inter: 'Inter', sans-serif;
+  /* Base */
+  --brand-dark-green: #244029;
+  --brand-beige: #F2DCB3;
+  --brand-muted: #9FA69F;
+  /* Secundarios y acentos */
+  --brand-grey-green: #4C594C;
+  --brand-off-white: #F2F2F2;
+  --brand-taupe: #C78CB5;
+  --brand-pastel-green: #D1E3CF;
+
+  --background: var(--brand-off-white);
+  --foreground: var(--brand-dark-green);
+  /* Avenir: geométrica, alta legibilidad, amable. Fallback para cuando no esté instalada. */
+  --font-avenir: "Avenir Next", "Avenir", "Avenir Next LT Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
+  --color-brand-dark-green: var(--brand-dark-green);
+  --color-brand-beige: var(--brand-beige);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-grey-green: var(--brand-grey-green);
+  --color-brand-off-white: var(--brand-off-white);
+  --color-brand-taupe: var(--brand-taupe);
+  --color-brand-pastel-green: var(--brand-pastel-green);
+  --font-sans: var(--font-avenir);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #1a1a1a;
     --foreground: #ededed;
   }
 }
@@ -22,7 +41,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-family: var(--font-avenir);
 }
 
 @layer components {

@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "Catálogo Inmobiliario - Encuentra tu hogar ideal",
@@ -21,9 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         <SessionProvider>
-          <div className="min-h-screen bg-gray-50">
+          <div className="min-h-screen bg-brand-off-white">
             <ConditionalHeader />
             <main>{children}</main>
           </div>
