@@ -7,8 +7,6 @@ import { prisma } from './db'
 import { loginSchema } from './validations'
 
 export const authOptions: NextAuthOptions = {
-  // Railway / reverse proxy: evita rechazos de host y callbacks incorrectos
-  trustHost: true,
   providers: [
     // Google Provider solo si las credenciales están configuradas
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
