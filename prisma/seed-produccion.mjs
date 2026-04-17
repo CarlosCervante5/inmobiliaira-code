@@ -2,13 +2,18 @@
 
 /**
  * Seed para crear usuarios de prueba en PRODUCCIÓN
- * 
- * Uso:
- * DATABASE_URL="tu-url-de-vercel" node prisma/seed-produccion.mjs
+ *
+ * Uso: npm run db:seed:direct
+ * (Carga .env / .env.local como seed.ts; o exporta DATABASE_URL manualmente.)
  */
 
+import { config } from 'dotenv'
+import { resolve } from 'path'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+
+config({ path: resolve(process.cwd(), '.env') })
+config({ path: resolve(process.cwd(), '.env.local'), override: true })
 
 const prisma = new PrismaClient()
 
