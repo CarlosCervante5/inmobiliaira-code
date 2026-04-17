@@ -22,9 +22,11 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        console.log('🔐 Intentando autenticar:', credentials?.email)
-        
-        if (!credentials?.email || !credentials?.password) {
+        const rawEmail = credentials?.email
+        const email = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : ''
+        console.log('🔐 Intentando autenticar:', email || rawEmail)
+
+        if (!email || !credentials?.password) {
           console.log('❌ Credenciales faltantes')
           return null
         }
@@ -38,7 +40,7 @@ export const authOptions: NextAuthOptions = {
 
           // Buscar usuario en la base de datos
           const user = await prisma.user.findUnique({
-            where: { email: credentials.email }
+            where: { email }
           })
 
           if (!user) {
