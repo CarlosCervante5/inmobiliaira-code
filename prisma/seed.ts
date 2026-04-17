@@ -1,5 +1,11 @@
+import { config } from 'dotenv'
+import { resolve } from 'path'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+
+// tsx no carga .env solo; Prisma CLI sí. Sin esto DATABASE_URL no existe al ejecutar este script.
+config({ path: resolve(process.cwd(), '.env') })
+config({ path: resolve(process.cwd(), '.env.local'), override: true })
 
 const prisma = new PrismaClient()
 
@@ -14,17 +20,19 @@ async function main() {
   // await prisma.property.deleteMany()
   // await prisma.user.deleteMany()
 
-  // Crear usuarios de prueba
+  // Crear usuarios de prueba (misma contraseña para todos en dev; login por credenciales en NextAuth)
   console.log('👥 Creando usuarios de prueba...')
+  const testPasswordHash = await bcrypt.hash('Test1234!', 12)
 
   // Broker 1
   const broker1 = await prisma.user.upsert({
     where: { email: 'broker1@test.com' },
-    update: {},
+    update: { password: testPasswordHash },
     create: {
       email: 'broker1@test.com',
       name: 'Juan Pérez',
       role: 'BROKER',
+      password: testPasswordHash,
       phone: '+52 55 1234 5678',
       license: '12345678',
       company: 'Inmobiliaria ABC',
@@ -37,11 +45,12 @@ async function main() {
   // Broker 2
   const broker2 = await prisma.user.upsert({
     where: { email: 'broker2@test.com' },
-    update: {},
+    update: { password: testPasswordHash },
     create: {
       email: 'broker2@test.com',
       name: 'María González',
       role: 'BROKER',
+      password: testPasswordHash,
       phone: '+52 55 9876 5432',
       license: '87654321',
       company: 'Propiedades Premium',
@@ -54,11 +63,12 @@ async function main() {
   // Cliente 1
   const client1 = await prisma.user.upsert({
     where: { email: 'cliente1@test.com' },
-    update: {},
+    update: { password: testPasswordHash },
     create: {
       email: 'cliente1@test.com',
       name: 'Carlos Ramírez',
       role: 'CLIENT',
+      password: testPasswordHash,
       phone: '+52 55 5555 1111',
       nss: '12345678901',
     },
@@ -67,11 +77,12 @@ async function main() {
   // Cliente 2
   const client2 = await prisma.user.upsert({
     where: { email: 'cliente2@test.com' },
-    update: {},
+    update: { password: testPasswordHash },
     create: {
       email: 'cliente2@test.com',
       name: 'Ana López',
       role: 'CLIENT',
+      password: testPasswordHash,
       phone: '+52 55 5555 2222',
       nss: '98765432109',
     },
@@ -173,16 +184,10 @@ async function main() {
   console.log('✅ Mensajes creados')
 
   console.log('\n✅ Seed completado exitosamente!')
-  console.log('\n📝 Usuarios de prueba creados:')
-  console.log('\n🔑 CREDENCIALES DE BROKERS (para la app móvil):')
-  console.log('   Email: broker1@test.com')
-  console.log('   Password: (Necesitas configurar NextAuth)')
-  console.log('')
-  console.log('   Email: broker2@test.com')
-  console.log('   Password: (Necesitas configurar NextAuth)')
-  console.log('\n⚠️  NOTA: NextAuth no usa contraseñas directas en el modelo User.')
-  console.log('   Para hacer login, necesitas configurar un proveedor de credenciales')
-  console.log('   o usar OAuth (Google, GitHub, etc.)')
+  console.log('\n📝 Login en /auth/signin (credenciales NextAuth + bcrypt):')
+  console.log('   Contraseña para todos los usuarios de prueba: Test1234!')
+  console.log('   - broker1@test.com, broker2@test.com, cliente1@test.com, cliente2@test.com')
+  console.log('   OAuth Google opcional si configuras GOOGLE_* en .env.local')
 }
 
 main()
